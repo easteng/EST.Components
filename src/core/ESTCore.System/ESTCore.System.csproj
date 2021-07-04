@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Ioc\" />
+    <Folder Include="Moudle\" />
+    <Folder Include="Intercept\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ESRCore.Platform\ESRCore.Platform.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="ESTControl.SvgViewer.DrawingPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ESTControl.SvgViewer"
+             xmlns:svg="http://sharpvectors.codeplex.com/runtime/"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             mc:Ignorable="d"
+             FocusManager.FocusedElement="{Binding ElementName=zoomPanControl}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <RoutedUICommand x:Key="Commands.ZoomOut"/>
+        <RoutedUICommand x:Key="Commands.ZoomIn"/>
+        <RoutedUICommand x:Key="Commands.Fill"/>
+        <RoutedUICommand x:Key="Commands.ZoomReset"/>
+        <RoutedUICommand x:Key="Commands.UndoZoom" />
+        <RoutedUICommand x:Key="Commands.RedoZoom" />
+        <RoutedUICommand x:Key="Commands.Panning" />
+        <local:ZoomPanScaleConverter x:Key="scaleToPercent"/>
+    </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{StaticResource Commands.ZoomOut}" Executed="OnZoomOut" CanExecute="OnCanZoomOut"/>
+        <CommandBinding Command="{StaticResource Commands.ZoomIn}" Executed="OnZoomIn" CanExecute="OnCanZoomIn"/>
+        <CommandBinding Command="{StaticResource Commands.Fill}" Executed="OnZoomFit" CanExecute="OnCanZoomFit"/>
+        <CommandBinding Command="{StaticResource Commands.ZoomReset}" Executed="OnZoomReset" CanExecute="OnCanZoomReset"/>
+        <CommandBinding Command="{StaticResource Commands.UndoZoom}" Executed="OnUndoZoom" CanExecute="OnCanUndoZoom"/>
+        <CommandBinding Command="{StaticResource Commands.RedoZoom}" Executed="OnRedoZoom" CanExecute="OnCanRedoZoom"/>
+        <CommandBinding Command="{StaticResource Commands.Panning}" Executed="OnPanMode" CanExecute="OnCanPanMode"/>
+    </UserControl.CommandBindings>
+    <DockPanel LastChildFill="True">
+        <ScrollViewer x:Name="canvasScroller" 
+                      CanContentScroll="True"
+                      VerticalScrollBarVisibility="Hidden"
+                      HorizontalScrollBarVisibility="Hidden"
+                            
+                      AllowDrop="True"
+                      Background="{Binding CustomColor,RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}}"
+                      >
+            <svg:ZoomPanControl x:Name="zoomPanControl" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                MouseDown="OnZoomPanMouseDown"
+                                MouseUp="OnZoomPanMouseUp"
+                                MouseDoubleClick="OnZoomPanMouseDoubleClick"
+                                MouseMove="OnZoomPanMouseMove"
+                                MouseWheel="OnZoomPanMouseWheel"
+                                Background="{Binding CustomColor,RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}}"
+                                >
+                <Grid x:Name="theGrid" >
+                    <svg:SvgDrawingCanvas x:Name="svgViewer"  Background="{Binding CustomColor,RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}}"/>
+                    <Canvas x:Name="eastenMain" Background="Transparent"/>
+                    <Canvas x:Name="dragZoomCanvas" Visibility="Collapsed" Background="Red">
+                        <Border x:Name="dragZoomBorder" BorderBrush="Red" 
+                                BorderThickness="1" 
+                                Background="Red"
+                                CornerRadius="1" 
+                                Opacity="0" 
+                                />
+                    </Canvas>
+                </Grid>
+            </svg:ZoomPanControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

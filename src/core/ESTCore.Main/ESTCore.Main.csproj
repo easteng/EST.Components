@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <OutputPath>..\..\..\package-output\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ESRCore.Platform\ESRCore.Platform.csproj" />
+    <ProjectReference Include="..\ESTCore.DB.Influxdb\ESTCore.DB.Influxdb.csproj" />
+    <ProjectReference Include="..\ESTCore.DB.Mongodb\ESTCore.DB.Mongodb.csproj" />
+    <ProjectReference Include="..\ESTCore.Domain\ESTCore.Domain.csproj" />
+    <ProjectReference Include="..\ESTCore.ORM.EFCore\ESTCore.ORM.EFCore.csproj" />
+    <ProjectReference Include="..\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
+  </ItemGroup>
+
+</Project>

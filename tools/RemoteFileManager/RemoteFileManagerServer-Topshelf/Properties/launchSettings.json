@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RemoteFileManagerServer-Topshelf": {
+      "commandName": "Project",
+      "remoteDebugEnabled": false
+    }
+  }
+}
