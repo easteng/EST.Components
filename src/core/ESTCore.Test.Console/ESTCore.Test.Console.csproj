@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ESTCore.Core\ESTCore.Core.csproj" />
     <ProjectReference Include="..\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
   </ItemGroup>
 

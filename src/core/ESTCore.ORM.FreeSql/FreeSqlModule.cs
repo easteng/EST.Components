@@ -11,48 +11,40 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
-using Surging.Core.CPlatform.Module;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FreeSql;
 using Microsoft.Extensions.DependencyInjection;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Autofac;
+using Silky.Lms.Core.Modularity;
+using System.Threading.Tasks;
+using Silky.Lms.Core;
+using System;
+using Silky.Lms.AutoMapper;
 
 namespace ESTCore.ORM.FreeSql
 {
-    public class FreeSqlModule : AbstractModule
+    public class FreeSqlModule : LmsModule
     {
-        public override void Initialize(AppModuleContext context)
+        public override Task Initialize(ApplicationContext applicationContext)
         {
-          
-            base.Initialize(context);
+            return base.Initialize(applicationContext);
         }
 
-        protected override void RegisterBuilder(ContainerBuilderWrapper builder)
+        protected override void RegisterServices(ContainerBuilder builder)
         {
             var service = new ServiceCollection();
-          //  service.AddSingleton<IFreeSql>(freeSql);
-           // service.AddFreeRepository();
-            builder.Register<IFreeSql>(context =>
-            {
-                var config = context.Resolve<IConfiguration>();
-                var dataType = config["DataBase:Type"];
-                var conn = config["DataBase:ConnectionString"];
-                var freeSql = new FreeSqlBuilder()
-                  .UseConnectionString(GetType(dataType), conn)
-                  .UseAutoSyncStructure(true)
-                  .Build();
-                return freeSql;
-            });
-            service.AddFreeRepository();
-            builder.ContainerBuilder.Populate(service);
-            base.RegisterBuilder(builder);
+            var config=EngineContext.Current.Resolve<IConfiguration>();
+            var dataType = config["DataBase:Type"];
+            var conn = config["DataBase:ConnectionString"];
+            var freeSql = new FreeSqlBuilder()
+              .UseConnectionString(GetType(dataType), conn)
+              .UseAutoSyncStructure(true)
+              .Build();
+            service.AddSingleton<IFreeSql>(freeSql);
+            service.AddFreeRepository(null, this.GetType().Assembly);
+            builder.Populate(service);
         }
 
         private DataType GetType(string type)
