@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ESTCore.Core\ESTCore.Core.csproj" />
+    <ProjectReference Include="..\EstMTramsit.Contracts\EstMTramsit.Contracts.csproj" />
+    <ProjectReference Include="..\src\core\ESTCore.MassTransit\ESTCore.MassTransit.csproj" />
+    <ProjectReference Include="..\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
