@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:ESTControl.SvgViewer"
              xmlns:svg="http://sharpvectors.codeplex.com/runtime/"
              xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              mc:Ignorable="d"
              FocusManager.FocusedElement="{Binding ElementName=zoomPanControl}"
              d:DesignHeight="450" d:DesignWidth="800">

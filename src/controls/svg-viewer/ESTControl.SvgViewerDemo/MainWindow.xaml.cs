@@ -12,17 +12,63 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using System.Windows.Forms;
+using ESTControl.SvgViewer;
 
 namespace ESTControl.SvgViewerDemo
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow.xamls
     /// </summary>
     public partial class MainWindow : Window
     {
+        MainViewModel mainViewModel;
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = mainViewModel = new MainViewModel();
+            this.svgContainer.ElementSelect += SvgContainer_ElementSelect;
+            this.svgContainer.PointSelectedEvent += SvgContainer_PointSelectedEvent;
+        }
+
+        private void SvgContainer_PointSelectedEvent(object sender, Point e)
+        {
+            var style = new ValueTemplateStyle();
+            style.NormalColor = "#4DA2FD";
+            style.ValueSize = 18;
+            style.ShowBadge = true;
+            var ele = CustomUIElement.CreateCustomUIElement(style, $"name_{DateTime.Now.ToString("YYYYmmddHHmmss")}", e);
+            this.mainViewModel.SetPoint(e);
+            this.svgContainer.AddUIElement(ele);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            // 打开图片
+            OpenFileDialog open = new OpenFileDialog();
+            open.ShowDialog();
+
+            var file = open.FileName;
+            this.svgContainer.LoadDocument(file);
+            
+        }
+
+        private void SvgContainer_ElementSelect(object sender, SharpVectors.Dom.Svg.SvgElement e)
+        {
+           
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            // 开启编辑
+            this.svgContainer.ViewerModel = SvgViewer.SvgViewModel.Edit;
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            // 关闭编辑
+            this.svgContainer.ViewerModel = SvgViewer.SvgViewModel.View;
         }
     }
 }

@@ -4,13 +4,27 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESTControl.SvgViewerDemo"
-        xmlns:svg="clr-namespace:ESTControl.SvgViewer;assembly=ESTControl.SvgViewer"
+        xmlns:svg="clr-namespace:ESTControl.SvgViewer;assembly=ESTControl.SvgViewer" 
+        d:DataContext="{d:DesignInstance Type=local:MainViewModel}"
         mc:Ignorable="d"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <svg:DrawingPage Width="300" Height="300" CustomColor="red"/>
+        <StackPanel Orientation="Horizontal">
+            <Button Margin="10,10" HorizontalAlignment="Left" Click="Button_Click">打开</Button>
+            <Button Margin="10,10" HorizontalAlignment="Left" Click="Button_Click_1" >开启编辑</Button>
+            <Button Margin="10,10" HorizontalAlignment="Left" Click="Button_Click_2" >关闭编辑</Button>
+            <TextBox x:Name="txt_select" Text="{Binding PointStr}"/>
+            <Border  BorderBrush="Gray" BorderThickness="1">
+                <hc:Badge Status="Processing" Height="20" Margin="0,0,0,0" Style="{StaticResource BadgeDanger}">
+                    <TextBlock Text="12.3" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </hc:Badge>
+            </Border>
+        </StackPanel>
+        <svg:DrawingPage Name="svgContainer" ViewerModel="View"  Grid.Row="1" CustomColor="#1E1E1E"/>
     </Grid>
 </Window>

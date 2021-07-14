@@ -69,7 +69,7 @@ namespace ESTControl.SvgViewer
 
 
         /// <summary>
-        /// 自定义
+        /// 自定义画刷
         /// </summary>
         public Brush CustomBrush
         {
@@ -82,7 +82,9 @@ namespace ESTControl.SvgViewer
             DependencyProperty.Register("CustomBrush", typeof(Brush), typeof(DrawingPage), new PropertyMetadata(default(DrawingPage)));
 
 
-
+        /// <summary>
+        ///  自定义颜色
+        /// </summary>
         public string CustomColor
         {
             get { return (string)GetValue(CustomColorProperty); }
@@ -95,6 +97,75 @@ namespace ESTControl.SvgViewer
 
 
         public const string TemporalDirName = "_Drawings";
+
+
+        // 新增方法
+        /// <summary>
+        /// 添加添加组件
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="point"></param>
+        public void AddUIElement(CustomUIElement element)
+        {
+            AddFrameworkElement2Cavas(element);
+        }
+
+        /// <summary>
+        /// 移出组件
+        /// </summary>
+        /// <param name="name"></param>
+        public void RemoveUIElement(string name)
+        {
+            foreach (FrameworkElement item in this.eastenMain.Children)
+            {
+                if (item.Name == name)
+                {
+                    this.eastenMain.Children.Remove(item);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 温度模板样式实体
+        /// </summary>
+        public ValueTemplateStyle ValueTemplateStyle { get; set; }
+        /// <summary>
+        /// 更新温度值
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public Task UpdateValueAsync(string name,decimal value)
+        {
+            return Task.CompletedTask;
+        }
+        /// <summary>
+        /// 初始化温度数据
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <returns></returns>
+        public Task InitializationPoint(List<CustomUIElement> elements)
+        {
+            return Task.Run(() =>
+            {
+                elements?.ForEach(a =>
+                {
+                    AddFrameworkElement2Cavas(a);
+                });
+            });
+        }
+        /// <summary>
+        /// 将元素添加到画布上
+        /// </summary>
+        /// <param name="element"></param>
+        private void AddFrameworkElement2Cavas(CustomUIElement element)
+        {
+            element.Element.SetValue(Canvas.LeftProperty, element.Point.X);
+            element.Element.SetValue(Canvas.TopProperty, element.Point.Y);
+            this.eastenMain.Children.Add(element.Element);
+        }
+
 
         #region private fields
         private const double ZoomChange = 0.1;
@@ -164,19 +235,38 @@ namespace ESTControl.SvgViewer
         private IList<EmbeddedImageSerializerArgs> _embeddedImages;
         #endregion
 
+
+        private SvgViewModel viewerModel;
+
+        public SvgViewModel ViewerModel
+        {
+            get { return viewerModel; }
+            set {
+                _mouseHandlingMode = value== SvgViewModel.Edit ? ZoomPanMouseHandlingMode.SelectPoint : ZoomPanMouseHandlingMode.Panning;
+                viewerModel = value; 
+            }
+        }
+
+
+
+        /// <summary>
+        /// 是否未编辑模式
+        /// </summary>
         private bool isEdit;
+        /// <summary>
+        /// 点击完成后的回调事件
+        /// </summary>
         public event EventHandler<SvgElement> ElementSelect;
+        public event EventHandler<Point> PointSelectedEvent;
         private TextEditor textEditor;
         System.Windows.Media.DrawingVisual _drawingVisual = null;
         [TypeConverter(typeof(BoolConvert))]
+        
+        // 编辑模式下鼠标移动变为点选。
         public bool IsEdit
         {
             get { return isEdit; }
-            set
-            {
-                _mouseHandlingMode = value ? ZoomPanMouseHandlingMode.SelectPoint : ZoomPanMouseHandlingMode.Panning;
-                isEdit = value;
-            }
+            set { isEdit = value; }
         }
 
         #region Private Zoom Panel Handlers
@@ -234,8 +324,8 @@ namespace ESTControl.SvgViewer
             if (_mouseHandlingMode == ZoomPanMouseHandlingMode.SelectPoint ||
                 _mouseHandlingMode == ZoomPanMouseHandlingMode.SelectRectangle)
             {
-                // 添加编辑逻辑
-                if (this.isEdit)
+                // 添加编辑逻辑 // 编辑模式
+                if (this.ViewerModel== SvgViewModel.Edit)
                 {
                     if (_drawingDocument != null)
                     {
@@ -248,6 +338,7 @@ namespace ESTControl.SvgViewer
                         //  var bade = new Badge();
                         var point = e.GetPosition(svgViewer);
 
+                        PointSelectedEvent?.Invoke(_drawingDocument,point);
 
                         //     < hc:Badge Status = "Processing" Height = "30" Margin = "32,0,0,0" Style = "{StaticResource BadgeDanger}" >
 
@@ -255,15 +346,16 @@ namespace ESTControl.SvgViewer
 
                         //</ hc:Badge >
 
-                        _drawingDocument.DisplayTransform = svgViewer.DisplayTransform;
-                        var hitResult = _drawingDocument.HitTest(point);
-                        if (hitResult != null && hitResult.IsHit)
-                        {
-                            //this.contentControl1.SetResourceReference(ContentControl .TemplateProperty, "DesignerItemTemplate");
+                        //_drawingDocument.DisplayTransform = svgViewer.DisplayTransform;
+                        //var hitResult = _drawingDocument.HitTest(point);
+                        //if (hitResult != null && hitResult.IsHit)
+                        //{
+                        //    //this.contentControl1.SetResourceReference(ContentControl .TemplateProperty, "DesignerItemTemplate");
 
-                            var selecteElement = hitResult.Element;
-                            ElementSelect?.Invoke(hitResult.Point.Value, selecteElement);
-                        }
+                        //    var selecteElement = hitResult.Element;
+                        //    ElementSelect?.Invoke(hitResult.Point.Value, selecteElement);
+                        //}
+                        //ElementSelect?.Invoke(point);
                     }
                 }
             }
@@ -806,32 +898,7 @@ namespace ESTControl.SvgViewer
         #endregion
 
         #region Public Properties
-        /// <summary>
-        /// 添加报警标记
-        /// </summary>
-        /// <param name="control"></param>
-        /// <param name="point"></param>
-        public void AddBadge(FrameworkElement control, Point point)
-        {
-            control.SetValue(Canvas.LeftProperty, point.X);
-            control.SetValue(Canvas.TopProperty, point.Y);
-            this.eastenMain.Children.Add(control);
-        }
-        /// <summary>
-        /// 移除标记
-        /// </summary>
-        /// <param name="name"></param>
-        public void RemoveEadge(string name)
-        {
-            foreach (FrameworkElement item in this.eastenMain.Children)
-            {
-                if (item.Name == name)
-                {
-                    this.eastenMain.Children.Remove(item);
-                    break;
-                }
-            }
-        }
+       
 
         public void ChangeTemperature(string name, decimal value)
         {
