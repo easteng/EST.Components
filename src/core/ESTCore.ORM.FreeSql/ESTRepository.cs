@@ -30,5 +30,11 @@ namespace ESTCore.ORM.FreeSql
             var free = EngineContext.Current.Resolve<IFreeSql>();
             return free.GetRepository<T, Tkey>();
         }
+
+        public static IBaseRepository<T> Builder<T>() where T : class
+        {
+            var free = EngineContext.Current.Resolve<IFreeSql>();
+            return free.GetRepository<T>();
+        }
     }
 }
