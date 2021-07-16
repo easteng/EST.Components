@@ -1,4 +1,6 @@
-﻿using ICSharpCode.AvalonEdit;
+﻿using HandyControl.Controls;
+
+using ICSharpCode.AvalonEdit;
 
 using SharpVectors.Converters;
 using SharpVectors.Dom.Svg;
@@ -165,7 +167,289 @@ namespace ESTControl.SvgViewer
             element.Element.SetValue(Canvas.TopProperty, element.Point.Y);
             this.eastenMain.Children.Add(element.Element);
         }
+        /// <summary>
+        /// 根据路径加载
+        /// </summary>
+        /// <param name="svgFilePath"></param>
+        /// <returns></returns>
+        public bool LoadDocument(string svgFilePath)
+        {
+            // 加载时比较耗时，添加一个进度条
+            // <hc:LoadingLine Grid.Row="1" hc:Background="Red"/>
+            if (string.IsNullOrWhiteSpace(svgFilePath) || !File.Exists(svgFilePath))
+            {
+                return false;
+            }
 
+            DirectoryInfo workingDir = _workingDir;
+            if (_directoryInfo != null)
+            {
+                workingDir = _directoryInfo;
+            }
+            _svgFilePath = svgFilePath;
+
+            string fileExt = System.IO.Path.GetExtension(svgFilePath);
+
+            if (string.Equals(fileExt, SvgConverter.SvgExt, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(fileExt, SvgConverter.CompressedSvgExt, StringComparison.OrdinalIgnoreCase))
+            {
+                if (_fileReader != null)
+                {
+                    _fileReader.SaveXaml = _saveXaml;
+                    _fileReader.SaveZaml = false;
+
+                    _embeddedImageVisitor.SaveImages = !_wpfSettings.IncludeRuntime;
+                    _embeddedImageVisitor.SaveDirectory = _drawingDir;
+                    _wpfSettings.Visitors.ImageVisitor = _embeddedImageVisitor;
+
+                    DrawingGroup drawing = _fileReader.Read(svgFilePath, workingDir);
+                    _drawingDocument = _fileReader.DrawingDocument;
+                    if (drawing != null)
+                    {
+                        svgViewer.UnloadDiagrams();
+                        svgViewer.RenderDiagrams(drawing);
+
+                        Rect bounds = svgViewer.Bounds;
+
+                        if (bounds.IsEmpty)
+                        {
+                            bounds = new Rect(0, 0, zoomPanControl.ActualWidth, zoomPanControl.ActualHeight);
+                        }
+
+                        zoomPanControl.AnimatedZoomTo(bounds);
+                        CommandManager.InvalidateRequerySuggested();
+
+                        return true;
+                    }
+                }
+            }
+            else if (string.Equals(fileExt, SvgConverter.XamlExt, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(fileExt, SvgConverter.CompressedXamlExt, StringComparison.OrdinalIgnoreCase))
+            {
+                svgViewer.LoadDiagrams(svgFilePath);
+
+                svgViewer.InvalidateMeasure();
+
+                return true;
+            }
+            RemoveUIElement("test");
+            _svgFilePath = null;
+            return false;
+        }
+        /// <summary>
+        /// 异步加载内容
+        /// </summary>
+        /// <param name="svgFilePath"></param>
+        /// <returns></returns>
+        public Task<bool> LoadDocumentAsync(string svgFilePath)
+        {
+            if (_isLoadingDrawing || string.IsNullOrWhiteSpace(svgFilePath) || !File.Exists(svgFilePath))
+            {
+#if DOTNET40
+                return TaskEx.FromResult<bool>(false);
+#else
+                return Task.FromResult<bool>(false);
+#endif
+            }
+
+            string fileExt = System.IO.Path.GetExtension(svgFilePath);
+
+            if (!(string.Equals(fileExt, SvgConverter.SvgExt, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(fileExt, SvgConverter.CompressedSvgExt, StringComparison.OrdinalIgnoreCase)))
+            {
+                _svgFilePath = null;
+#if DOTNET40
+                return TaskEx.FromResult<bool>(false);
+#else
+                return Task.FromResult<bool>(false);
+#endif
+            }
+
+            _isLoadingDrawing = true;
+
+            this.UnloadDocument(true);
+
+            DirectoryInfo workingDir = _workingDir;
+            if (_directoryInfo != null)
+            {
+                workingDir = _directoryInfo;
+            }
+
+            _svgFilePath = svgFilePath;
+            _embeddedImageVisitor.SaveImages = !_wpfSettings.IncludeRuntime;
+            _embeddedImageVisitor.SaveDirectory = _drawingDir;
+            _wpfSettings.Visitors.ImageVisitor = _embeddedImageVisitor;
+
+            if (_fileReader == null)
+            {
+                _fileReader = new FileSvgReader(_wpfSettings);
+                _fileReader.SaveXaml = _saveXaml;
+                _fileReader.SaveZaml = false;
+            }
+
+            var drawingStream = new MemoryStream();
+
+            // Get the UI thread's context
+            var context = TaskScheduler.FromCurrentSynchronizationContext();
+
+            return Task<bool>.Factory.StartNew(() =>
+            {
+                //                var saveXaml = _fileReader.SaveXaml;
+                //                _fileReader.SaveXaml = true; // For threaded, we will save to avoid loading issue later...
+
+                //Stopwatch stopwatch = new Stopwatch();
+
+                //stopwatch.Start();
+
+                //DrawingGroup drawing = _fileReader.Read(svgFilePath, workingDir);
+
+                //stopwatch.Stop();
+
+                //Trace.WriteLine(string.Format("FileName={0}, Time={1}", 
+                //    Path.GetFileName(svgFilePath), stopwatch.ElapsedMilliseconds));
+
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+
+                DrawingGroup drawing = _fileReader.Read(svgFilePath, workingDir);
+
+                watch.Stop();
+
+                Debug.WriteLine("{0}: {1}", System.IO.Path.GetFileName(svgFilePath), watch.ElapsedMilliseconds);
+
+                //                _fileReader.SaveXaml = saveXaml;
+                _drawingDocument = _fileReader.DrawingDocument;
+                if (drawing != null)
+                {
+                    XamlWriter.Save(drawing, drawingStream);
+                    drawingStream.Seek(0, SeekOrigin.Begin);
+                    return true;
+                }
+                _svgFilePath = null;
+                return false;
+            }).ContinueWith((t) =>
+            {
+                try
+                {
+                    if (!t.Result)
+                    {
+                        _isLoadingDrawing = false;
+                        _svgFilePath = null;
+                        return false;
+                    }
+                    if (drawingStream.Length != 0)
+                    {
+                        // textEditor.Load(drawingStream);
+                        DrawingGroup drawing = (DrawingGroup)XamlReader.Load(drawingStream);
+                        svgViewer.UnloadDiagrams();
+                        svgViewer.RenderDiagrams(drawing);
+                        Rect bounds = svgViewer.Bounds;
+
+                        if (bounds.IsEmpty)
+                        {
+                            bounds = new Rect(0, 0, svgViewer.ActualWidth, svgViewer.ActualHeight);
+                        }
+
+                        zoomPanControl.AnimatedZoomTo(bounds);
+                        CommandManager.InvalidateRequerySuggested();
+
+                        // The drawing changed, update the source...
+                        _fileReader.Drawing = drawing;
+                    }
+
+                    _isLoadingDrawing = false;
+
+                    return true;
+                }
+                catch
+                {
+                    _isLoadingDrawing = false;
+                    throw;
+                }
+            }, context);
+        }
+        /// <summary>
+        /// 不加载内容
+        /// </summary>
+        /// <param name="displayMessage"></param>
+        public void UnloadDocument(bool displayMessage = false)
+        {
+            try
+            {
+                _svgFilePath = null;
+                _drawingDocument = null;
+
+                if (svgViewer != null)
+                {
+                    // svgViewer.UnloadDiagrams();
+
+                    if (displayMessage)
+                    {
+                        var drawing = this.DrawText("加载中，请稍后");
+
+                        svgViewer.RenderDiagrams(drawing);
+
+                        Rect bounds = svgViewer.Bounds;
+                        if (bounds.IsEmpty)
+                        {
+                            bounds = drawing.Bounds;
+                        }
+
+                        zoomPanControl.ZoomTo(bounds);
+                        return;
+                    }
+                    else
+                    {
+                        var drawing = this.DrawText("");
+                        svgViewer.RenderDiagrams(drawing);
+                        return;
+                    }
+                }
+
+                var drawRect = this.DrawRect();
+                svgViewer.RenderDiagrams(drawRect);
+
+                zoomPanControl.ZoomTo(drawRect.Bounds);
+                ClearPrevZoomRect();
+                ClearNextZoomRect();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                if (_embeddedImages != null && _embeddedImages.Count != 0)
+                {
+                    foreach (var embeddedImage in _embeddedImages)
+                    {
+                        try
+                        {
+                            if (embeddedImage.Image != null)
+                            {
+                                if (embeddedImage.Image.StreamSource != null)
+                                {
+                                    embeddedImage.Image.StreamSource.Dispose();
+                                }
+                            }
+
+                            var imagePath = embeddedImage.ImagePath;
+                            if (!string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath))
+                            {
+                                File.Delete(imagePath);
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            Trace.TraceError(ex.ToString());
+                            // Image this, WPF will typically cache and/or lock loaded images
+                        }
+                    }
+
+                    _embeddedImages.Clear();
+                }
+            }
+        }
 
         #region private fields
         private const double ZoomChange = 0.1;
@@ -258,6 +542,7 @@ namespace ESTControl.SvgViewer
         /// </summary>
         public event EventHandler<SvgElement> ElementSelect;
         public event EventHandler<Point> PointSelectedEvent;
+        public event EventHandler<FrameworkElement> ElementUpdate;
         private TextEditor textEditor;
         System.Windows.Media.DrawingVisual _drawingVisual = null;
         [TypeConverter(typeof(BoolConvert))]
@@ -271,6 +556,9 @@ namespace ESTControl.SvgViewer
 
         #region Private Zoom Panel Handlers
 
+        FrameworkElement targetElement;
+        Point targetPoint;
+        bool IsDrag = false;// 是否进行了元素拖动
         /// <summary>
         /// Event raised on mouse down in the ZoomAndPanControl.
         /// </summary>
@@ -286,6 +574,21 @@ namespace ESTControl.SvgViewer
             if (_mouseHandlingMode == ZoomPanMouseHandlingMode.SelectPoint ||
                 _mouseHandlingMode == ZoomPanMouseHandlingMode.SelectRectangle)
             {
+                // 选中点或者矩形框  实现拖动
+                var selectElement = Mouse.DirectlyOver as FrameworkElement;
+                if (selectElement != null&& selectElement.Name.StartsWith("est"))
+                {
+                    if(selectElement.Parent is Border)
+                    {
+                        targetElement = selectElement.Parent as FrameworkElement;
+                        targetPoint = e.GetPosition(targetElement);
+                        targetElement.CaptureMouse();
+                    }
+                }
+                else
+                {
+                    targetElement = null;
+                }
             }
             else
             {
@@ -337,25 +640,31 @@ namespace ESTControl.SvgViewer
 
                         //  var bade = new Badge();
                         var point = e.GetPosition(svgViewer);
-
-                        PointSelectedEvent?.Invoke(_drawingDocument,point);
-
-                        //     < hc:Badge Status = "Processing" Height = "30" Margin = "32,0,0,0" Style = "{StaticResource BadgeDanger}" >
-
-                        //   < Button Content = "{ex:Lang Key={x:Static langs:LangKeys.Reply}}" />
-
-                        //</ hc:Badge >
-
-                        //_drawingDocument.DisplayTransform = svgViewer.DisplayTransform;
+                        // 获取点击的点坐标 过滤自定义的内容
+                        if (targetElement!=null)
+                        {
+                            // 提交更新的内容
+                            ElementUpdate?.Invoke(new object(), targetElement);
+                            Mouse.Capture(null);
+                            targetElement = null;
+                        }
+                        else
+                        {
+                            PointSelectedEvent?.Invoke(_drawingDocument, point);
+                        }
+                        _drawingDocument.DisplayTransform = svgViewer.DisplayTransform;
                         //var hitResult = _drawingDocument.HitTest(point);
                         //if (hitResult != null && hitResult.IsHit)
                         //{
                         //    //this.contentControl1.SetResourceReference(ContentControl .TemplateProperty, "DesignerItemTemplate");
-
+                        //    // 获取到选中的内容, 如果是自定义的元素，就返回，而且要支持拖动
                         //    var selecteElement = hitResult.Element;
-                        //    ElementSelect?.Invoke(hitResult.Point.Value, selecteElement);
+                        //    if (selecteElement.Name.StartsWith("est"))
+                        //    {
+                        //        ElementSelect?.Invoke(hitResult.Point.Value, selecteElement);
+                        //    }
                         //}
-                        //ElementSelect?.Invoke(point);
+                       // ElementSelect?.Invoke(point);
                     }
                 }
             }
@@ -402,6 +711,17 @@ namespace ESTControl.SvgViewer
             if (_mouseHandlingMode == ZoomPanMouseHandlingMode.SelectPoint ||
                 _mouseHandlingMode == ZoomPanMouseHandlingMode.SelectRectangle)
             {
+                if (targetElement != null)
+                {
+                    // 编辑状态下移动
+                    //确定鼠标左键处于按下状态并且有元素被选中
+                    if (e.LeftButton == MouseButtonState.Pressed && targetElement != null)
+                    {
+                        var pCanvas = e.GetPosition(this.eastenMain);
+                        Canvas.SetLeft(targetElement, pCanvas.X - targetPoint.X);
+                        Canvas.SetTop(targetElement, pCanvas.Y - targetPoint.Y);
+                    }
+                }
             }
             else
             {
@@ -1013,279 +1333,7 @@ namespace ESTControl.SvgViewer
         #endregion
 
         #region Public Methods
-        public bool LoadDocument(string svgFilePath)
-        {
-            if (string.IsNullOrWhiteSpace(svgFilePath) || !File.Exists(svgFilePath))
-            {
-                return false;
-            }
-
-            DirectoryInfo workingDir = _workingDir;
-            if (_directoryInfo != null)
-            {
-                workingDir = _directoryInfo;
-            }
-
-            this.UnloadDocument(true);
-
-            _svgFilePath = svgFilePath;
-
-            string fileExt = System.IO.Path.GetExtension(svgFilePath);
-
-            if (string.Equals(fileExt, SvgConverter.SvgExt, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(fileExt, SvgConverter.CompressedSvgExt, StringComparison.OrdinalIgnoreCase))
-            {
-                if (_fileReader != null)
-                {
-                    _fileReader.SaveXaml = _saveXaml;
-                    _fileReader.SaveZaml = false;
-
-                    _embeddedImageVisitor.SaveImages = !_wpfSettings.IncludeRuntime;
-                    _embeddedImageVisitor.SaveDirectory = _drawingDir;
-                    _wpfSettings.Visitors.ImageVisitor = _embeddedImageVisitor;
-
-                    DrawingGroup drawing = _fileReader.Read(svgFilePath, workingDir);
-                    _drawingDocument = _fileReader.DrawingDocument;
-                    if (drawing != null)
-                    {
-                        svgViewer.UnloadDiagrams();
-                        svgViewer.RenderDiagrams(drawing);
-
-                        Rect bounds = svgViewer.Bounds;
-
-                        if (bounds.IsEmpty)
-                        {
-                            bounds = new Rect(0, 0, zoomPanControl.ActualWidth, zoomPanControl.ActualHeight);
-                        }
-
-                        zoomPanControl.AnimatedZoomTo(bounds);
-                        CommandManager.InvalidateRequerySuggested();
-
-                        return true;
-                    }
-                }
-            }
-            else if (string.Equals(fileExt, SvgConverter.XamlExt, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(fileExt, SvgConverter.CompressedXamlExt, StringComparison.OrdinalIgnoreCase))
-            {
-                svgViewer.LoadDiagrams(svgFilePath);
-
-                svgViewer.InvalidateMeasure();
-
-                return true;
-            }
-
-            _svgFilePath = null;
-
-            return false;
-        }
-
-        public Task<bool> LoadDocumentAsync(string svgFilePath)
-        {
-            if (_isLoadingDrawing || string.IsNullOrWhiteSpace(svgFilePath) || !File.Exists(svgFilePath))
-            {
-#if DOTNET40
-                return TaskEx.FromResult<bool>(false);
-#else
-                return Task.FromResult<bool>(false);
-#endif
-            }
-
-            string fileExt = System.IO.Path.GetExtension(svgFilePath);
-
-            if (!(string.Equals(fileExt, SvgConverter.SvgExt, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(fileExt, SvgConverter.CompressedSvgExt, StringComparison.OrdinalIgnoreCase)))
-            {
-                _svgFilePath = null;
-#if DOTNET40
-                return TaskEx.FromResult<bool>(false);
-#else
-                return Task.FromResult<bool>(false);
-#endif
-            }
-
-            _isLoadingDrawing = true;
-
-            this.UnloadDocument(true);
-
-            DirectoryInfo workingDir = _workingDir;
-            if (_directoryInfo != null)
-            {
-                workingDir = _directoryInfo;
-            }
-
-            _svgFilePath = svgFilePath;
-            _embeddedImageVisitor.SaveImages = !_wpfSettings.IncludeRuntime;
-            _embeddedImageVisitor.SaveDirectory = _drawingDir;
-            _wpfSettings.Visitors.ImageVisitor = _embeddedImageVisitor;
-
-            if (_fileReader == null)
-            {
-                _fileReader = new FileSvgReader(_wpfSettings);
-                _fileReader.SaveXaml = _saveXaml;
-                _fileReader.SaveZaml = false;
-            }
-
-            var drawingStream = new MemoryStream();
-
-            // Get the UI thread's context
-            var context = TaskScheduler.FromCurrentSynchronizationContext();
-
-            return Task<bool>.Factory.StartNew(() =>
-            {
-                //                var saveXaml = _fileReader.SaveXaml;
-                //                _fileReader.SaveXaml = true; // For threaded, we will save to avoid loading issue later...
-
-                //Stopwatch stopwatch = new Stopwatch();
-
-                //stopwatch.Start();
-
-                //DrawingGroup drawing = _fileReader.Read(svgFilePath, workingDir);
-
-                //stopwatch.Stop();
-
-                //Trace.WriteLine(string.Format("FileName={0}, Time={1}", 
-                //    Path.GetFileName(svgFilePath), stopwatch.ElapsedMilliseconds));
-
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
-
-                DrawingGroup drawing = _fileReader.Read(svgFilePath, workingDir);
-
-                watch.Stop();
-
-                Debug.WriteLine("{0}: {1}", System.IO.Path.GetFileName(svgFilePath), watch.ElapsedMilliseconds);
-
-                //                _fileReader.SaveXaml = saveXaml;
-                _drawingDocument = _fileReader.DrawingDocument;
-                if (drawing != null)
-                {
-                    XamlWriter.Save(drawing, drawingStream);
-                    drawingStream.Seek(0, SeekOrigin.Begin);
-                    return true;
-                }
-                _svgFilePath = null;
-                return false;
-            }).ContinueWith((t) =>
-            {
-                try
-                {
-                    if (!t.Result)
-                    {
-                        _isLoadingDrawing = false;
-                        _svgFilePath = null;
-                        return false;
-                    }
-                    if (drawingStream.Length != 0)
-                    {
-                        // textEditor.Load(drawingStream);
-                        DrawingGroup drawing = (DrawingGroup)XamlReader.Load(drawingStream);
-                        svgViewer.UnloadDiagrams();
-                        svgViewer.RenderDiagrams(drawing);
-                        Rect bounds = svgViewer.Bounds;
-
-                        if (bounds.IsEmpty)
-                        {
-                            bounds = new Rect(0, 0, svgViewer.ActualWidth, svgViewer.ActualHeight);
-                        }
-
-                        zoomPanControl.AnimatedZoomTo(bounds);
-                        CommandManager.InvalidateRequerySuggested();
-
-                        // The drawing changed, update the source...
-                        _fileReader.Drawing = drawing;
-                    }
-
-                    _isLoadingDrawing = false;
-
-                    return true;
-                }
-                catch
-                {
-                    _isLoadingDrawing = false;
-                    throw;
-                }
-            }, context);
-        }
-
-        public void UnloadDocument(bool displayMessage = false)
-        {
-            try
-            {
-                _svgFilePath = null;
-                _drawingDocument = null;
-
-                if (svgViewer != null)
-                {
-                    // svgViewer.UnloadDiagrams();
-
-                    if (displayMessage)
-                    {
-                        var drawing = this.DrawText("Loading...");
-
-                        svgViewer.RenderDiagrams(drawing);
-
-                        Rect bounds = svgViewer.Bounds;
-                        if (bounds.IsEmpty)
-                        {
-                            bounds = drawing.Bounds;
-                        }
-
-                        zoomPanControl.ZoomTo(bounds);
-                        return;
-                    }
-                    else
-                    {
-                        var drawing = this.DrawText("");
-                        svgViewer.RenderDiagrams(drawing);
-                        return;
-                    }
-                }
-
-                var drawRect = this.DrawRect();
-                svgViewer.RenderDiagrams(drawRect);
-
-                zoomPanControl.ZoomTo(drawRect.Bounds);
-                ClearPrevZoomRect();
-                ClearNextZoomRect();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            finally
-            {
-                if (_embeddedImages != null && _embeddedImages.Count != 0)
-                {
-                    foreach (var embeddedImage in _embeddedImages)
-                    {
-                        try
-                        {
-                            if (embeddedImage.Image != null)
-                            {
-                                if (embeddedImage.Image.StreamSource != null)
-                                {
-                                    embeddedImage.Image.StreamSource.Dispose();
-                                }
-                            }
-
-                            var imagePath = embeddedImage.ImagePath;
-                            if (!string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath))
-                            {
-                                File.Delete(imagePath);
-                            }
-                        }
-                        catch (IOException ex)
-                        {
-                            Trace.TraceError(ex.ToString());
-                            // Image this, WPF will typically cache and/or lock loaded images
-                        }
-                    }
-
-                    _embeddedImages.Clear();
-                }
-            }
-        }
+      
 
         public bool SaveDocument(string fileName)
         {

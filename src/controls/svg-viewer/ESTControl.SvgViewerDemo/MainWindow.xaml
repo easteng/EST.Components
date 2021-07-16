@@ -11,7 +11,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
@@ -20,11 +20,17 @@
             <Button Margin="10,10" HorizontalAlignment="Left" Click="Button_Click_2" >关闭编辑</Button>
             <TextBox x:Name="txt_select" Text="{Binding PointStr}"/>
             <Border  BorderBrush="Gray" BorderThickness="1">
-                <hc:Badge Status="Processing" Height="20" Margin="0,0,0,0" Style="{StaticResource BadgeDanger}">
-                    <TextBlock Text="12.3" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <hc:Badge Status="Processing" hc:Background="Orange" hc:Poptip.IsOpen="True" Height="20" Margin="0,0,0,0" Style="{StaticResource BadgeDanger}">
+                    <TextBlock Text="12.3" Foreground="green" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </hc:Badge>
             </Border>
+            <hc:PreviewSlider Name="PreviewSliderHorizontal" Width="300" Value="0" Maximum="30">
+                <hc:PreviewSlider.PreviewContent>
+                    <Label Style="{StaticResource LabelPrimary}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0.00"/>
+                </hc:PreviewSlider.PreviewContent>
+            </hc:PreviewSlider>
         </StackPanel>
-        <svg:DrawingPage Name="svgContainer" ViewerModel="View"  Grid.Row="1" CustomColor="#1E1E1E"/>
+        <svg:DrawingPage Name="svgContainer" ViewerModel="View"  Grid.Row="1" Background="#1E1E1E"  CustomColor="#1E1E1E">
+        </svg:DrawingPage>
     </Grid>
 </Window>

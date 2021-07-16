@@ -48,7 +48,7 @@ namespace ESTControl.SvgViewer
             text.Foreground = BrushConverter(style.NormalColor);
             text.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             text.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            text.Text = "00.00";
+            text.Text = "00.00"; 
             if (style.ShowBadge)
             {
                 var badge = new Badge();

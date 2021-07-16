@@ -17,6 +17,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ESTControl.SvgViewer
 {
@@ -44,9 +46,26 @@ namespace ESTControl.SvgViewer
         public static CustomUIElement CreateCustomUIElement(ValueTemplateStyle style,string name,Point point)
         {
             var custom = new CustomUIElement();
-            var element = CustomDrawing.BuilderTempElement(style, name);
+            // var element = CustomDrawing.BuilderTempElement(style, name);
+            var element = new TextBlock();
+            element.Text = "ceshi";
+            element.Foreground = Brushes.Red;
+            element.FontSize = 17;
+            element.Name = "est_text_002";
+            element.HorizontalAlignment = HorizontalAlignment.Center;
+            element.VerticalAlignment = VerticalAlignment.Center;
+            var border = new Border();
+            border.Margin = new Thickness(10);
+            border.Width = 40;
+            border.Height = 30;
+            border.BorderBrush = Brushes.Red;
+            border.Background = Brushes.Blue;
+            border.BorderThickness =new Thickness(2);
+            border.Name = "est_border_001";
+            border.Child = element;
+
             custom.Point = point;
-            custom.Element = element;
+            custom.Element = border;
             custom.ValueTemplateStyle = style;
             return custom;
         }

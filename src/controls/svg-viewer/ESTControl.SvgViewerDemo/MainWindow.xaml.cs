@@ -30,6 +30,20 @@ namespace ESTControl.SvgViewerDemo
             this.DataContext = mainViewModel = new MainViewModel();
             this.svgContainer.ElementSelect += SvgContainer_ElementSelect;
             this.svgContainer.PointSelectedEvent += SvgContainer_PointSelectedEvent;
+            this.svgContainer.ElementUpdate += SvgContainer_ElementUpdate;
+        }
+
+        /// <summary>
+        /// 拖动改变
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SvgContainer_ElementUpdate(object sender, FrameworkElement e)
+        {
+            var x =(double) e.GetValue(Canvas.LeftProperty);
+            var y =(double) e.GetValue(Canvas.TopProperty);
+            var point = new Point(x, y);
+            this.mainViewModel.SetPoint(point);
         }
 
         private void SvgContainer_PointSelectedEvent(object sender, Point e)
@@ -50,7 +64,7 @@ namespace ESTControl.SvgViewerDemo
             open.ShowDialog();
 
             var file = open.FileName;
-            this.svgContainer.LoadDocument(file);
+            _ = this.svgContainer.LoadDocument(file);
             
         }
 
