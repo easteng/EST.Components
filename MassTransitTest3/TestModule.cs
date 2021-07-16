@@ -15,6 +15,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
 using ESTCore.MassTransit;
+using ESTCore.Message;
 using ESTCore.ORM.FreeSql;
 
 
@@ -54,17 +55,20 @@ namespace MassTransitTest3
                         c.Username(config["Rabbitmq:Username"]);
                         c.Password(config["Rabbitmq:Password"]);
                     });
-                    cif.ReceiveEndpoint("server2", e =>
+                    cif.ReceiveEndpoint("HealthCheck", e =>
                     {
+                        e.Instance(new HealthConsumer());
+                       // e.Handler<IBaseMessage>(new );
                         //e.Handler<IBaseMessage>(async context =>
                         //{
                         //    await Task.Run(() =>
                         //    {
-                        //        Console.WriteLine("Received By Handler:{0}", context.Message.Name);
+                        //        Console.WriteLine("Received By Handler:{0}", context.Message.Topic);
                         //    });
-                        //})
-                        e.Observer(new MessageConsumer());
+                        //});
+                       // e.Observer(new MessageConsumer());
                        // e.Consumer<UpdateOrderStatusConsumer>(context);
+                       // e.Consumer<HealthConsumer>(context);
                     });
                 });
 
@@ -72,6 +76,11 @@ namespace MassTransitTest3
             service.AddMassTransitHostedService();
             builder.Populate(service);
            // base.RegisterServices(builder);
+        }
+
+        private MessageHandler<IBaseMessage> handler(ConsumeContext<HealthCheckMessage> context)
+        {
+            return null;
         }
     }
 }

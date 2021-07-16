@@ -25,6 +25,11 @@ namespace ESTCore.Message
     public class HealthCheckMessage:AbstractMessage
     {
         public override string Topic { get => "HealthCheck"; set => base.Topic = value; }
+        public HealthCheckMessage(string name)
+        {
+            this.ServerName = name;
+        }
+
         /// <summary>
         /// 服务名称
         /// </summary>

@@ -19,12 +19,12 @@ using System.Threading.Tasks;
 
 namespace ESTCore.MassTransit
 {
-    public class BaseMessage:IBaseMessage
+    public class BaseMessage:IBaseMessage1
     {
         public string Name { get; set; }
     }
 
-    public interface IBaseMessage
+    public interface IBaseMessage1
     {
         string Name { get; set; }
     }
