@@ -15,6 +15,8 @@ using ESTCore.Message;
 
 using MassTransit;
 
+using Silky.Lms.Core.Extensions;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,16 +28,13 @@ namespace MassTransitTest3
     /// <summary>
     ///  
     /// </summary>
-    public class HealthConsumer : IConsumer<HealthCheckMessage>
+    public class HealthConsumer : IConsumer<ServiceStatusMessage>
     {
-        public Task Consume(ConsumeContext<HealthCheckMessage> context)
+        public async Task Consume(ConsumeContext<ServiceStatusMessage> context)
         {
-           return Task.Run(() =>
-            {
-                var message = context.Message as HealthCheckMessage;
-                Console.WriteLine($"{message.ServerName}:运行正常");
-            });
-            
+            var message = context.Message;
+            Console.WriteLine($"{message.ServiceType.GetDisplay()}:{message.Status.GetDisplay()}：{message.Time}");
+            await context.RespondAsync<CheckMessageStatus>(new { Ok = true });  // 相应
         }
     }
 }

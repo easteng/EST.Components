@@ -26,4 +26,12 @@ namespace ESTCore.Message
     {
         Task Send<TMessage>(TMessage message) where TMessage : IBaseMessage;
     }
+
+    public interface ICommandSender<T> where T : IBaseMessage
+    {
+        Task Send(ServiceType type, ServiceStatus status);
+
+        Task Push(ServiceType type, ServiceStatus status);
+    }
+
 }

@@ -48,4 +48,40 @@ namespace ESTCore.Message
             await point.Send(message);
         }
     }
+
+    public class CommandSender<T> : ICommandSender<T> where T : class, IBaseMessage
+    {
+        readonly IBus _bus;
+        readonly IConfiguration config;
+        public CommandSender(IBus bus = null, IConfiguration config = null)
+        {
+            _bus = bus;
+            this.config = config;
+        }
+        /// <summary>
+        /// 推送消息
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        public async Task Push(ServiceType type, ServiceStatus status)
+        {
+            var messsage = MessageCenter.CreateMessage<T>(type, status);
+            await _bus.Publish<T>(messsage);
+        }
+
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        public async Task Send(ServiceType type, ServiceStatus status)
+        {
+            var messsage = MessageCenter.CreateMessage<T>(type, status);
+            var url = new Uri($"{config["Rabbitmq:Host"]}/{messsage.Topic}");
+            var point = await _bus.GetSendEndpoint(url);
+            await point.Send(messsage);
+        }
+    }
 }

@@ -107,11 +107,31 @@ namespace ESTControl.SvgViewer
         /// </summary>
         /// <param name="control"></param>
         /// <param name="point"></param>
-        public void AddUIElement(CustomUIElement element)
+        public void AddUIElement(FrameworkElement element,Point point)
         {
-            AddFrameworkElement2Cavas(element);
+            AddFrameworkElement2Cavas(element, point);
         }
+        /// <summary>
+        /// svg容器初始化
+        /// </summary>
+        public void Initialization()
+        {
+            var list=new List<FrameworkElement>();
+            foreach (FrameworkElement item in this.eastenMain.Children)
+            {
+                if (item.Name.StartsWith("est"))
+                {
+                    list.Add(item); 
+                }
+            }
 
+            list?.ForEach(a =>
+            {
+                this.eastenMain.Children.Remove(a);
+            });
+
+           
+        }
         /// <summary>
         /// 移出组件
         /// </summary>
@@ -151,21 +171,21 @@ namespace ESTControl.SvgViewer
         {
             return Task.Run(() =>
             {
-                elements?.ForEach(a =>
-                {
-                    AddFrameworkElement2Cavas(a);
-                });
+                //elements?.ForEach(a =>
+                //{
+                //    AddFrameworkElement2Cavas(a,a.Point);
+                //});
             });
         }
         /// <summary>
         /// 将元素添加到画布上
         /// </summary>
         /// <param name="element"></param>
-        private void AddFrameworkElement2Cavas(CustomUIElement element)
+        private void AddFrameworkElement2Cavas(FrameworkElement element,Point point)
         {
-            element.Element.SetValue(Canvas.LeftProperty, element.Point.X);
-            element.Element.SetValue(Canvas.TopProperty, element.Point.Y);
-            this.eastenMain.Children.Add(element.Element);
+            element.SetValue(Canvas.LeftProperty, point.X);
+            element.SetValue(Canvas.TopProperty, point.Y);
+            this.eastenMain.Children.Add(element);
         }
         /// <summary>
         /// 根据路径加载
@@ -578,12 +598,24 @@ namespace ESTControl.SvgViewer
                 var selectElement = Mouse.DirectlyOver as FrameworkElement;
                 if (selectElement != null&& selectElement.Name.StartsWith("est"))
                 {
-                    if(selectElement.Parent is Border)
+                    var userControl = VisualTreeHelp.FindParent<UserControl>(selectElement);
+                    if(userControl != null)
                     {
-                        targetElement = selectElement.Parent as FrameworkElement;
+                        targetElement = userControl;
                         targetPoint = e.GetPosition(targetElement);
                         targetElement.CaptureMouse();
                     }
+                    //if(selectElement is TextBlock)
+                    //{
+                    //    targetElement = ((selectElement.Parent as FrameworkElement).Parent as FrameworkElement).Parent as FrameworkElement;
+                    //    targetPoint = e.GetPosition(targetElement);
+                    //    targetElement.CaptureMouse();
+                    //}else if(selectElement is Border)
+                    //{
+                    //    targetElement = (selectElement as FrameworkElement).Parent as FrameworkElement;
+                    //    targetPoint = e.GetPosition(targetElement);
+                    //    targetElement.CaptureMouse();
+                    //}
                 }
                 else
                 {
@@ -639,12 +671,12 @@ namespace ESTControl.SvgViewer
                         }
 
                         //  var bade = new Badge();
-                        var point = e.GetPosition(svgViewer);
+                        var point = e.GetPosition(svgViewer);.
                         // 获取点击的点坐标 过滤自定义的内容
                         if (targetElement!=null)
                         {
                             // 提交更新的内容
-                            ElementUpdate?.Invoke(new object(), targetElement);
+                            ElementUpdate?.Invoke(point,targetElement);
                             Mouse.Capture(null);
                             targetElement = null;
                         }
@@ -718,8 +750,11 @@ namespace ESTControl.SvgViewer
                     if (e.LeftButton == MouseButtonState.Pressed && targetElement != null)
                     {
                         var pCanvas = e.GetPosition(this.eastenMain);
-                        Canvas.SetLeft(targetElement, pCanvas.X - targetPoint.X);
-                        Canvas.SetTop(targetElement, pCanvas.Y - targetPoint.Y);
+                        var xx = pCanvas.X - targetPoint.X;
+                        var yy = pCanvas.Y - targetPoint.Y;
+                        targetElement.Tag = new Point(xx, yy);
+                        Canvas.SetLeft(targetElement, xx);
+                        Canvas.SetTop(targetElement,yy );
                     }
                 }
             }

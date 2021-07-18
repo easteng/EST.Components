@@ -55,10 +55,10 @@ namespace MassTransitTest3
                         c.Username(config["Rabbitmq:Username"]);
                         c.Password(config["Rabbitmq:Password"]);
                     });
-                    cif.ReceiveEndpoint("HealthCheck", e =>
+                    cif.ReceiveEndpoint("ServiceState", e =>
                     {
                         e.Instance(new HealthConsumer());
-                       // e.Handler<IBaseMessage>(new );
+                        // e.Handler<IBaseMessage>(new );
                         //e.Handler<IBaseMessage>(async context =>
                         //{
                         //    await Task.Run(() =>
@@ -66,11 +66,15 @@ namespace MassTransitTest3
                         //        Console.WriteLine("Received By Handler:{0}", context.Message.Topic);
                         //    });
                         //});
-                       // e.Observer(new MessageConsumer());
-                       // e.Consumer<UpdateOrderStatusConsumer>(context);
-                       // e.Consumer<HealthConsumer>(context);
+                        // e.Observer(new MessageConsumer());
+                        // e.Consumer<UpdateOrderStatusConsumer>(context);
+                        // e.Consumer<HealthConsumer>(context);
+                       // e.DeadLetterExchange = "RRRRRR";
+                        //e.BindDeadLetterQueue("ServiceState");
                     });
                 });
+
+                conf.AddRequestClient < CheckMessageStatus> ();// 添加相应客户端
 
             });
             service.AddMassTransitHostedService();
