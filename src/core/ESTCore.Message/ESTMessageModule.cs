@@ -39,6 +39,8 @@ namespace ESTCore.Message
         {
             var services = new ServiceCollection();
             services.AddSingleton<ICommandSender, CommandSender>();
+            // 注入服务
+            services.AddTransient(typeof(ICommandSender<>),typeof(CommandSender<>));
             builder.Populate(services);
         }
     }

@@ -14,50 +14,53 @@
 //using ESTCore.MassTransit;
 
 
-//using MassTransit;
+using ESTCore.Message;
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+using MassTransit;
+
+using Silky.Lms.Core.Extensions;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 //namespace MassTransitTest3
 //{
 //    //public class MessageConsumer : IConsumer<IBaseMessage>
-//    public class MessageConsumer : IObserver<ConsumeContext<IBaseMessage>>
-//    {
-//        public Task Consume(MassTransit.ConsumeContext<IBaseMessage> context)
-//        {
-//            return Task.Run(async () =>
-//            {
-//                // var config = EngineContext.Current.Resolve<IConfiguration>();
-//                var message = context.Message;
-//                Console.WriteLine($"收到消息:{message.Name}");
-//                //// 发送命令
-//                //var endPoint = await context.GetSendEndpoint(new Uri($"{config["Rabbitmq:Host"]}/test/order-queue"));
-//                //await endPoint.Send<IUpdateOrderStatus>(new
-//                //{
-//                //    CommandId = Guid.NewGuid(),
-//                //    Text = "修改订单状态",
-//                //    Date = DateTime.Now
-//                //});
-//            });
-//        }
+public class MessageConsumer : IObserver<ConsumeContext<ServiceStatusMessage>>
+{
+    public Task Consume(MassTransit.ConsumeContext<ServiceStatusMessage> context)
+    {
+        return Task.Run(async () =>
+        {
+                // var config = EngineContext.Current.Resolve<IConfiguration>();
+                var message = context.Message;
+          
+                //// 发送命令
+                //var endPoint = await context.GetSendEndpoint(new Uri($"{config["Rabbitmq:Host"]}/test/order-queue"));
+                //await endPoint.Send<IUpdateOrderStatus>(new
+                //{
+                //    CommandId = Guid.NewGuid(),
+                //    Text = "修改订单状态",
+                //    Date = DateTime.Now
+                //});
+            });
+    }
 
-//        public void OnCompleted()
-//        {
-//            throw new NotImplementedException();
-//        }
+    public void OnCompleted()
+    {
+        throw new NotImplementedException();
+    }
 
-//        public void OnError(Exception error)
-//        {
-//            throw new NotImplementedException();
-//        }
-
-//        public void OnNext(ConsumeContext<IBaseMessage> value)
-//        {
-//            Console.WriteLine("Received By Observer:{0}", value.Message.Name);
-//        }
-//    }
-//}
+    public void OnError(Exception error)
+    {
+        throw new NotImplementedException();
+    }
+    public void OnNext(ConsumeContext<ServiceStatusMessage> value)
+    {
+        var message = value.Message;    
+        Console.WriteLine($"{message.ServiceType.GetDisplay()}:{message.Status.GetDisplay()}:{message.Time}");
+    }
+}
