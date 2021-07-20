@@ -52,12 +52,12 @@ namespace MassTransitTest1
             var index = 0;
             while (true)
             {
-                index++;
-                var point =await bus.GetSendEndpoint(new Uri($"{config["Rabbitmq:Host"]}/zbd"));
-                await point.Send<IBaseMessage>(new BaseMessage() { Name = index.ToString() });
-                //await bus.Publish<IBaseMessage>(new {Name= index});
-                Console.WriteLine(index.ToString());
-                await Task.Delay(500);
+                //index++;
+                //var point =await bus.GetSendEndpoint(new Uri($"{config["Rabbitmq:Host"]}/zbd"));
+                //await point.Send<IBaseMessage>(new BaseMessage() { Name = index.ToString() });
+                ////await bus.Publish<IBaseMessage>(new {Name= index});
+                //Console.WriteLine(index.ToString());
+                //await Task.Delay(500);
             }
             // 发布事件
            

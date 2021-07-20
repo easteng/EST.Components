@@ -60,15 +60,15 @@ namespace MassTransitTest2
                     cif.ReceiveEndpoint("server1", e =>
                     {
                         // e.Handler<IBaseMessage>()
-                        e.Handler<IBaseMessage>(async context =>
-                        {
-                            await Task.Run(() =>
-                            {
-                                Console.WriteLine("Received By Handler:{0}", context.Message.Name);
-                            });
-                        },cc=> {
-                            cc.UseConcurrentMessageLimit(200);
-                        });
+                        //e.Handler<IBaseMessage>(async context =>
+                        //{
+                        //    await Task.Run(() =>
+                        //    {
+                        //        Console.WriteLine("Received By Handler:{0}", context.Message.Name);
+                        //    });
+                        //},cc=> {
+                        //    cc.UseConcurrentMessageLimit(200);
+                        //});
                        // e.Observer(new MessageConsumer());
                         // e.Consumer<UpdateOrderStatusConsumer>(context);
                     });
