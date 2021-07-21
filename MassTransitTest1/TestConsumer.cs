@@ -11,6 +11,9 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.Message;
+using ESTCore.Message.Handler;
+
 using MassTransit;
 
 using System;
@@ -21,8 +24,12 @@ using System.Threading.Tasks;
 
 namespace MassTransitTest1
 {
-    public class TestConsumer: IConsumer
+    public class TestConsumer : IMessageRepeaterHandler<HealthCheckMessage>
     {
-
+        public Task Repeater(StandardMessage<HealthCheckMessage> message, ServerContext context)
+        {
+            //throw new NotImplementedException();
+            return Task.CompletedTask;
+        }
     }
 }

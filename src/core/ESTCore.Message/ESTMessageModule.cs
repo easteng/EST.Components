@@ -15,6 +15,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
 using ESTCore.MassTransit;
+using ESTCore.Message.Handler;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -38,6 +39,10 @@ namespace ESTCore.Message
         protected override void RegisterServices(ContainerBuilder builder)
         {
             var services = new ServiceCollection();
+
+            //注册服务端接收消息的事件帮助类
+            services.AddSingleton(typeof(MessageCenterServerEventHandler));
+
             services.AddSingleton<ICommandSender, CommandSender>();
             // 注入服务
             services.AddTransient(typeof(ICommandSender<>),typeof(CommandSender<>));

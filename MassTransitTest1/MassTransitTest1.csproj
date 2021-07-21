@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ESTCore.Core\ESTCore.Core.csproj" />
     <ProjectReference Include="..\EstMTramsit.Contracts\EstMTramsit.Contracts.csproj" />
-    <ProjectReference Include="..\src\core\ESTCore.MassTransit\ESTCore.MassTransit.csproj" />
+    <ProjectReference Include="..\src\core\ESTCore.Message\ESTCore.Message.csproj" />
     <ProjectReference Include="..\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
   </ItemGroup>
 

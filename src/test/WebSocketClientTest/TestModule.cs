@@ -14,10 +14,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
-using ESTCore.Message.Services;
-using ESTCore.ORM.FreeSql;
-
-using MassTransit;
+using ESTCore.WebSocket;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,14 +25,11 @@ using Silky.Lms.Core.Modularity;
 using System;
 using System.Threading.Tasks;
 
-namespace MassTransitTest1
+namespace WebSocketClientTest
 {
-    [DependsOn(typeof(FreeSqlModule))]
+    [DependsOn(typeof(ESTWebSocketModule))]
     public class TestModule: StartUpModule
     {
-        public TestModule()
-        {
-        }
         public override Task Initialize(ApplicationContext applicationContext)
         {
             return base.Initialize(applicationContext);
@@ -43,37 +37,42 @@ namespace MassTransitTest1
 
         protected override void RegisterServices(ContainerBuilder builder)
         {
-            var service = new ServiceCollection();
-            var config = EngineContext.Current.Resolve<IConfiguration>();
-            service.UseMessageCenterServer(builder=> {
-                builder.AddRepeater<TestConsumer>();
-                builder.Build();
-            });
             //service.AddMassTransit(conf =>
             //{
+            //    //  conf.AddConsumer<MessageConsumer>();
+            //    //  conf.AddConsumer<UpdateOrderStatusConsumer>();
             //    conf.UsingRabbitMq((context, cif) =>
             //    {
-            //        cif.Host(new Uri($"{config["Rabbitmq:Host"]}"), c =>
+            //        cif.Host(config["Rabbitmq:Host"], c =>
             //        {
             //            c.Username(config["Rabbitmq:Username"]);
             //            c.Password(config["Rabbitmq:Password"]);
             //        });
+            //        cif.ReceiveEndpoint("ServiceState", e =>
+            //        {
+            //            e.Instance(new HealthConsumer());
+            //            // e.Handler<IBaseMessage>(new );
+            //            //e.BindDeadLetterQueue("ServiceState");
+            //        });
             //    });
 
+            //    conf.AddRequestClient<CheckMessageStatus>();// 添加相应客户端
+
             //});
-            //var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
-            //{
-            //    sbc.Host(new Uri(config["Rabbitmq:Host"]), h =>
-            //    {
-            //        h.Username(config["Rabbitmq:Username"]);
-            //        h.Password(config["Rabbitmq:Password"]);
-            //    });
-            //});
-            service.AddHostedService<TestService>();
-            // builder.UseMassTransit<TestConsumer>("aaaa");
-            service.AddMassTransitHostedService();
+            //service.AddMassTransitHostedService();
+            //builder.Populate(service);
+            var service = new ServiceCollection();
+            var config = EngineContext.Current.Resolve<IConfiguration>();
+            service.AddESTWebSocket(builder=> {
+                builder.AddConfig(a =>
+                {
+                    a = ESTCore.WebSocket.Config.SocketInstanceType.Server;
+                });
+                builder.Build();
+                
+            });
             builder.Populate(service);
-            base.RegisterServices(builder);
+           // base.RegisterServices(builder);
         }
     }
 }

@@ -1,29 +1,32 @@
 ﻿/**********************************************************************
-*******命名空间： ESTCore.Message
-*******类 名 称： ServerResponseMessage
-*******类 说 明： 采集服务响应消息体
+*******命名空间： ESTCore.WebSocket
+*******接口名称： IESTBaseCommand
+*******接口说明： 
 *******作    者： Easten
 *******机器名称： EASTEN
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/13/2021 2:28:59 PM
+*******创建时间： 7/21/2021 3:11:58 PM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.WebSocket.Message;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ESTCore.Message
+namespace ESTCore.WebSocket
 {
     /// <summary>
-    ///  采集服务响应消息体
+    /// 基本消息命令
     /// </summary>
-    public class ServerResponseMessage:AbstractMessage
+    public interface IWSCommandProvider 
     {
-        public override string Topic { get => "ServerResponse"; set => base.Topic = value; }
+        Task Execute(CommandMessage command);
     }
+
 }
