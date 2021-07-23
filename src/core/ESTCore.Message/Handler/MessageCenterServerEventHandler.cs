@@ -12,8 +12,11 @@
 ***********************************************************************
  */
 using ESTCore.Common.WebSocket;
+using ESTCore.Message.Message;
 
 using Newtonsoft.Json;
+
+using Silky.Lms.Core;
 
 using System;
 using System.Collections.Generic;
@@ -28,43 +31,26 @@ namespace ESTCore.Message.Handler
     /// </summary>
     public class MessageCenterServerEventHandler
     {
-        WebSocketServer webSocket;
-        IMessageRepeaterHandler<HealthCheckMessage> healthRepeater; 
-        public MessageCenterServerEventHandler(WebSocketServer webSocket = null,
-            IMessageRepeaterHandler<HealthCheckMessage> healthRepeater = null)
+        public MessageCenterServerEventHandler()
         {
-            this.webSocket = webSocket;
-            this.healthRepeater = healthRepeater;
         }
         /// <summary>
-        /// 接收消息信息
+        /// 接收消息信息,并根据消息主题发送到对应的转换器，再由转换器进行分配消息
         /// </summary>
         /// <param name="session"></param>
         /// <param name="message"></param>
         public void MessageReveive(WebSocketSession session, WebSocketMessage message)
         {
             // 对消息进行处理 
-            if (message != null && message.HasMask)
+            if (message != null)
             {
-                // 转发的信息必须有掩码
-                var obj = GetMessage(message.Payload);
-                if (obj.GetType() == typeof(HealthCheckMessage))
+                var messageInstance = BaseMessage.ResolveMessage(message.Payload);
+                // 获取转换机实例并发送消息
+                var repeater = EngineContext.Current.ResolveNamed<IMessageRepeaterHandler>(messageInstance.Topic);
+                if (repeater != null)
                 {
-
+                    repeater.Repeater(messageInstance);
                 }
-            }
-        }
-
-        public object GetMessage(byte[] data)
-        {
-            try
-            {
-                var str = Encoding.Default.GetString(data);
-                return JsonConvert.DeserializeObject(str);
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException("参数有问题，请检查");
             }
         }
 

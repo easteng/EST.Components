@@ -11,6 +11,8 @@
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.Message.Handler;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,17 +26,6 @@ namespace ESTCore.Message.Services
     /// </summary>
     public static class MessageCenterServerBuilderExtensions
     {
-        /// <summary>
-        /// 添加转换器
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static MessageCenterServerBuilder AddRepeater<T>(this MessageCenterServerBuilder builder)
-        {
-            builder.AddRepeater<T>();
-            return builder;
-        }
         /// <summary>
         /// 构建实例
         /// </summary>

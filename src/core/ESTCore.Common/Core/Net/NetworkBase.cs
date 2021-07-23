@@ -269,7 +269,7 @@ namespace ESTCore.Common.Core.Net
                 int num1 = 0;
                 do
                 {
-                    int num2 = socket.Send(data, offset, size - num1, SocketFlags.None);
+                    int num2 = (int)(socket?.Send(data, offset, size - num1, SocketFlags.None));
                     num1 += num2;
                     offset += num2;
                 }

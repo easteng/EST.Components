@@ -11,6 +11,9 @@
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+
 using ESTCore.Common.WebSocket;
 using ESTCore.Message.Handler;
 
@@ -35,23 +38,25 @@ namespace ESTCore.Message
         private IServiceCollection services { get; }
         private WebSocketServer wsServer { get; set; }
         private MessageCenterServerEventHandler serverEventHandler;
-        public MessageCenterServerBuilder(IServiceCollection serviceDescriptors = null, 
-            MessageCenterServerEventHandler serverEventHandler = null)
+        private ContainerBuilder containerBuilder;
+        public MessageCenterServerBuilder(IServiceCollection serviceDescriptors = null, ContainerBuilder containerBuilder = null)
         {
             this.services = serviceDescriptors;
-            this.serverEventHandler = serverEventHandler;
+            this.serverEventHandler = new MessageCenterServerEventHandler();
+            this.containerBuilder = containerBuilder;
         }
 
         /// <summary>
         /// 添加转发器，用于接收数据和转发数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void AddRepeater<T>(Action<AbstractMessage> message)
+        public void AddRepeater<T>(string name)
         {
-            AbstractMessage msg = null;
-            message.Invoke(msg);            
-            services.AddSingleton(typeof(IMessageRepeaterHandler<>), typeof(T));
-            services.AddSingleton(msg);
+            this.containerBuilder
+                .RegisterType(typeof(T))
+                .SingleInstance()
+                .AsSelf()
+                .Named(name,typeof(IMessageRepeaterHandler));
         }
 
         public void Build()
@@ -59,13 +64,18 @@ namespace ESTCore.Message
             var config = EngineContext.Current.Resolve<IConfiguration>();
             try
             {
-                wsServer = new WebSocketServer();
-                wsServer.ServerStart(int.Parse(config["WebSocket:Port"]));
+                wsServer = new WebSocketServer();              
                 wsServer.OnClientApplicationMessageReceive += this.serverEventHandler.MessageReveive;
                 wsServer.OnClientConnected += this.serverEventHandler.ClientConencted;
                 wsServer.OnClientDisConnected += this.serverEventHandler.ClientDisConencted;
+                wsServer.ServerStart(int.Parse(config["WebHost:Port"]));
                 // 注册实例
-                services.AddSingleton(wsServer);
+                services.AddSingleton<WebSocketServer>(a=>{
+                    return wsServer;
+                }); 
+                // 注册消息服务提供者对象
+                services.AddSingleton<IMessageServerProvider, MessageServerProvider>();
+                this.containerBuilder.Populate(this.services); // 合并服务
                 Console.WriteLine($"WebSocket 服务已启动：{wsServer.Port}");
             }
             catch (Exception ex)

@@ -11,6 +11,9 @@
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using System;
@@ -48,6 +51,17 @@ namespace ESTCore.Message.Services
         {
             var messageCore = new MessageCenterClientBuilder(serviceCollection);
             builder.Invoke(messageCore);
+        }
+
+        /// <summary>
+        /// 注册消息中心服务
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="serviceCollection"></param>
+        public static void RegisterMessageCenter(this ContainerBuilder container, Action<MessageCenterBuilder> builder)
+        {
+            var build = new MessageCenterBuilder(container);
+            builder.Invoke(build);
         }
     }
 }

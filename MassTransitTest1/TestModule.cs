@@ -46,7 +46,7 @@ namespace MassTransitTest1
             var service = new ServiceCollection();
             var config = EngineContext.Current.Resolve<IConfiguration>();
             service.UseMessageCenterServer(builder=> {
-                builder.AddRepeater<TestConsumer>();
+               // builder.AddRepeater<TestConsumer>();
                 builder.Build();
             });
             //service.AddMassTransit(conf =>
