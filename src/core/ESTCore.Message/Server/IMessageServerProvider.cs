@@ -12,6 +12,7 @@
 ***********************************************************************
  */
 using ESTCore.Common.WebSocket;
+using ESTCore.Message.Message;
 
 using System;
 using System.Collections.Generic;
@@ -24,22 +25,29 @@ namespace ESTCore.Message.Handler
     /// <summary>
     ///  服务上下文
     /// </summary>
-    public class ServerContext
+    public interface IMessageServerProvider
+    {
+        Task Publish(string topic, BaseMessage message);
+    }
+
+    public class MessageServerProvider : IMessageServerProvider
     {
         readonly WebSocketServer webSocketServer;
-        public ServerContext(WebSocketServer webSocketServer = null)
+        public MessageServerProvider(WebSocketServer webSocketServer = null)
         {
             this.webSocketServer = webSocketServer;
         }
         /// <summary>
-        /// 发送消息
+        /// 向指定主题发送消息数据
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="topic"></param>
         /// <param name="message"></param>
-        public void Publish<T>(string topic,T message) where T:AbstractMessage
+        /// <returns></returns>
+        public Task Publish(string topic, BaseMessage message)
         {
-            this.webSocketServer.PublishClientPayload(topic, message.ToString());
+            return Task.Run(() => this.webSocketServer.PublishClientPayload(topic, message.ToString()));
         }
     }
+
+
 }

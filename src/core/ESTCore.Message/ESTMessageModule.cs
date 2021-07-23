@@ -39,11 +39,7 @@ namespace ESTCore.Message
             var services = new ServiceCollection();
 
             //注册服务端接收消息的事件帮助类
-            services.AddSingleton< MessageCenterServerEventHandler>(new MessageCenterServerEventHandler());
-
-            services.AddSingleton<ICommandSender, CommandSender>();
-            // 注入服务
-            services.AddTransient(typeof(ICommandSender<>),typeof(CommandSender<>));
+            services.AddSingleton< MessageCenterServerEventHandler>(new MessageCenterServerEventHandler());           
             builder.Populate(services);
         }
     }

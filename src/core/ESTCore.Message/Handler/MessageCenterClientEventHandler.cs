@@ -12,6 +12,10 @@
 ***********************************************************************
  */
 using ESTCore.Common.WebSocket;
+using ESTCore.Message.Client;
+using ESTCore.Message.Message;
+
+using Silky.Lms.Core;
 
 using System;
 using System.Collections.Generic;
@@ -26,18 +30,29 @@ namespace ESTCore.Message.Handler
     /// </summary>
     public class MessageCenterClientEventHandler
     {
-        public static void OnClientApplicationMessageReceive(WebSocketMessage message)
+        public void OnClientApplicationMessageReceive(WebSocketMessage message)
         {
-
+            // 接收到消息，进行处理，有可能消息，有可能是命令消息
+            if (message != null)
+            {
+                var messageInstance = BaseMessage.ResolveMessage(message.Payload);
+                // 获取转换机实例并发送消息
+                var repeater = EngineContext.Current.ResolveNamed<IMessageReceiverHandler>(messageInstance.Topic);
+                if (repeater != null)
+                {
+                    repeater.Receive(messageInstance);
+                }
+            }
         }
 
-        public static void OnNetworkError(object sender, EventArgs e)
+        public void OnNetworkError(object sender, EventArgs e)
         {
-
+            // 断开服务器
+            MessageClientState.IsSuccess=false;
         }
-        public static void OnClientConnected()
+        public void OnClientConnected()
         {
-
+            MessageClientState.IsSuccess = true;
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -153,13 +154,46 @@ namespace ESTControl.SvgViewer
         /// </summary>
         public ValueTemplateStyle ValueTemplateStyle { get; set; }
         /// <summary>
-        /// 更新温度值
+        /// 更新温度值  
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
+        /// <param name="name">组件的name 值</param>
+        /// <param name="code">传感器的编码</param>
+        /// <param name="value">温度值</param>
+        /// <param name="state">温度的状态 是否报警，是否正常等</param>
         /// <returns></returns>
-        public Task UpdateValueAsync(string name,decimal value)
+        public Task UpdateValueAsync(string[] name,string code,double value,int state)
         {
+            try
+            {
+                this.Dispatcher.BeginInvoke(() => {
+                    foreach (FrameworkElement item in this.eastenMain.Children)
+                    {
+                       // 通过反射获取组件的SetValue 方法
+                       if (name.Contains(item.Name))
+                        {
+                            var methodInfos = item.GetType().GetMethods();
+                            Object[] paras = new Object[] { code, value, state };
+                            for (int i = 0; i < methodInfos.Length; i++)
+                            {
+                                var md = methodInfos[i];
+                                //方法名
+                                string mothodName = md.Name;
+                                //参数集合
+                                ParameterInfo[] paramInfos = md.GetParameters();
+                                //方法名相同且参数个数一样
+                                if (mothodName == "SetValue" && paramInfos.Length == paras.Length)
+                                {
+                                    md.Invoke(item, paras);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+
+            }
             return Task.CompletedTask;
         }
         /// <summary>
@@ -671,7 +705,7 @@ namespace ESTControl.SvgViewer
                         }
 
                         //  var bade = new Badge();
-                        var point = e.GetPosition(svgViewer);.
+                        var point = e.GetPosition(svgViewer);
                         // 获取点击的点坐标 过滤自定义的内容
                         if (targetElement!=null)
                         {

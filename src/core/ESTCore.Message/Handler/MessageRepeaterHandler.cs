@@ -21,8 +21,11 @@ using System.Threading.Tasks;
 
 namespace ESTCore.Message.Handler
 {
+    /// <summary>
+    /// 消息转换器帮助类，主要用于服务端使用，用来接收处理消息，并做转发使用的
+    /// </summary>
     public interface IMessageRepeaterHandler
     {
-        abstract Task Repeater(BaseMessage message, ServerContext context);
+        abstract Task Repeater(BaseMessage message);
     }
 }

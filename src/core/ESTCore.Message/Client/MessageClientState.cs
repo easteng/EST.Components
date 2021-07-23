@@ -1,18 +1,16 @@
 ﻿/**********************************************************************
 *******命名空间： ESTCore.Message.Client
-*******类 名 称： BaseReceiver
-*******类 说 明： 基础接收者定义
+*******类 名 称： MessageClientState
+*******类 说 明： 消息客户端状态，
 *******作    者： Easten
-*******机器名称： EASTEN
+*******机器名称： DESKTOP-EC8U0GP
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/23/2021 2:25:43 PM
+*******创建时间： 7/24/2021 12:04:17 AM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
-******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
+******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
-using ESTCore.Message.Handler;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +20,13 @@ using System.Threading.Tasks;
 namespace ESTCore.Message.Client
 {
     /// <summary>
-    ///  
+    /// 消息客户端装，为静态类，用来记录当前客户端是否成功的连接服务
     /// </summary>
-    public class BaseReceiver<T> : IMessageReceiverHandler<T> where T : AbstractMessage
+    public abstract class MessageClientState
     {
-        public virtual Task Receive(StandardMessage<T> message, ServerContext context)
-        {
-            return Task.CompletedTask;
-        }
+        /// <summary>
+        /// 是否连接正常
+        /// </summary>
+        public static bool IsSuccess { get; set; } = false;
     }
 }

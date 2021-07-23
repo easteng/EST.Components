@@ -11,6 +11,8 @@
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.Message.Message;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +22,10 @@ using System.Threading.Tasks;
 namespace ESTCore.Message.Handler
 {
     /// <summary>
-    /// 消息接收机
+    /// 消息接收机帮助接口，主要用于客户端使用，用来接收服务端发送来的消息以及消息命令使用
     /// </summary>
-    public interface IMessageReceiverHandler<T> where T : class
+    public interface IMessageReceiverHandler
     {
-        abstract Task Receive(StandardMessage<T> message, ServerContext context);
+        abstract Task Receive(BaseMessage message);
     }
 }

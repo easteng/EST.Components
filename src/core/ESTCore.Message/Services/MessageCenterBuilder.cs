@@ -1,7 +1,7 @@
 ﻿/**********************************************************************
 *******命名空间： ESTCore.Message.Services
 *******类 名 称： MessageCenterBuilder
-*******类 说 明： 
+*******类 说 明： 创建消息中心
 *******作    者： Easten
 *******机器名称： EASTEN
 *******CLR 版本： 4.0.30319.42000
@@ -34,14 +34,20 @@ namespace ESTCore.Message.Services
         {
             this.builder = builder;
         }
+        /// <summary>
+        /// 配置客户端信息
+        /// </summary>
+        /// <param name="options"></param>
         public void OptionClient(Action<MessageCenterClientBuilder> options)
         {
             var services = new ServiceCollection();
-            builder.Populate(services);
-            var clientBuilder = new MessageCenterClientBuilder(services);
+            var clientBuilder = new MessageCenterClientBuilder(services,this.builder);
             options.Invoke(clientBuilder);
         }
-
+        /// <summary>
+        /// 配置服务端信息
+        /// </summary>
+        /// <param name="options"></param>
         public void OptionServer(Action<MessageCenterServerBuilder> options)
         {
             var services = new ServiceCollection();

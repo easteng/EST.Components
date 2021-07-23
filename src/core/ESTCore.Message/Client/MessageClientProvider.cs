@@ -45,10 +45,18 @@ namespace ESTCore.Message.Client
 
         public Task SendMessage<T>(T message) where T : AbstractMessage
         {
-            if (webSocketClient != null)
+            try
             {
-                webSocketClient.SendServer(message.ToString());
+                if (webSocketClient != null)
+                {
+                    webSocketClient.SendServer(message.ToString());
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("数据中心服务未连接，发送失败...");
+            }
+           
             return Task.CompletedTask;
         }
     }

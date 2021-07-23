@@ -26,16 +26,46 @@ namespace ESTCore.Message.Message
     /// </summary>
     public class BaseMessage
     {
-        public BaseMessage(byte[] data)
+        /// <summary>
+        ///  由二进制解析消息体
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+
+        public static BaseMessage ResolveMessage(byte[] data)
         {
-            this.Data = data;
-            this.GetTopic();
+            var  message=new BaseMessage();
+            message.Data = data;
+            message.GetTopic();
+            return message;
         }
+
+        /// <summary>
+        /// 通过消息实体创建一条公用的消息体
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static BaseMessage CreateMessage<T>(T message) where T : AbstractMessage
+        {
+            var baseMsg = new BaseMessage();
+            var msgStr=JsonConvert.SerializeObject(message);
+            var data=Encoding.Default.GetBytes(msgStr);
+            baseMsg.Data = data;
+            baseMsg.GetTopic(); 
+            return baseMsg; 
+        }
+
+        /// <summary>
+        /// 消息主题
+        /// </summary>
         public string Topic { get; set; }
         /// <summary>
         /// 元数据
         /// </summary>
         public byte[] Data { get; set; }
+
+        public override string ToString()=> Encoding.Default.GetString(Data);
 
         /// <summary>
         /// 获取消息内容
@@ -68,5 +98,4 @@ namespace ESTCore.Message.Message
             public string Topic { get; set; }
         }
     }
-
 }

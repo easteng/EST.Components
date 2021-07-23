@@ -12,6 +12,9 @@
 ***********************************************************************
  */
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
+
+using Castle.Core.Internal;
 
 using ESTCore.Common.WebSocket;
 using ESTCore.Message.Client;
@@ -37,8 +40,9 @@ namespace ESTCore.Message.Services
     public class MessageCenterClientBuilder:IDisposable
     {
         private IServiceCollection services { get; }
-        private ContainerBuilder builder { get; }
         private WebSocketClient client { get; set; }
+        private ContainerBuilder containerBuilder;
+        private MessageCenterClientEventHandler messageCenterClientEvent; 
         private bool IsDispose { get; set; }
         /// <summary>
         /// 是否成功连接服务
@@ -47,24 +51,35 @@ namespace ESTCore.Message.Services
         /// <summary>
         /// 客户端需要订阅的主题
         /// </summary>
-        public string[] Topic { get; set; }
+        public List<string> Topic { get; set; }=new List<string>(); 
         /// <summary>
         /// 服务连接失败重试的事件间隔
         /// </summary>
         public TimeSpan ReConnectTimeSpan { get; set; }
 
-        public MessageCenterClientBuilder(IServiceCollection serviceDescriptors = null)
+        public MessageCenterClientBuilder(IServiceCollection serviceDescriptors = null, ContainerBuilder containerBuilder = null)
         {
             this.services = serviceDescriptors;
+            this.containerBuilder = containerBuilder;
+            this.messageCenterClientEvent = new MessageCenterClientEventHandler();
         }
         /// <summary>
         /// 添加数据接收机
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void AddReceiver<T>()
+        public void AddReceiver<T>(Action<ClientOption> option)
         {
-             services.AddSingleton(typeof(IMessageReceiverHandler<>), typeof(BaseReceiver<>));
-            services.AddSingleton(typeof(T));
+            var opt = new ClientOption();
+            option.Invoke(opt);
+            containerBuilder.RegisterType<T>()
+                .OwnedByLifetimeScope()
+                .AsSelf()
+                .Named<IMessageReceiverHandler>(opt.Name);
+
+            if (opt.Topic.IsNullOrEmpty())
+                this.Topic.Add(opt.Name);
+            else
+                this.Topic.Add(opt.Topic);
         }
 
 
@@ -76,15 +91,16 @@ namespace ESTCore.Message.Services
                 var ip = config["WebHost:Ip"];
                 var port = int.Parse(config["WebHost:port"]);
                 client = new WebSocketClient(ip,port);
-                client.OnClientApplicationMessageReceive += MessageCenterClientEventHandler.OnClientApplicationMessageReceive;
-                client.OnClientConnected += MessageCenterClientEventHandler.OnClientConnected;
-                client.OnNetworkError += MessageCenterClientEventHandler.OnNetworkError;
+                client.OnClientApplicationMessageReceive += messageCenterClientEvent.OnClientApplicationMessageReceive;
+                client.OnClientConnected += messageCenterClientEvent.OnClientConnected;
+                client.OnNetworkError += messageCenterClientEvent.OnNetworkError;
                 services.AddSingleton(client); // 注册服务
                 services.AddSingleton<IMessageClientProvider, MessageClientProvider>(); // 注册消息提供
-                var res=client.ConnectServer(Topic);
+                this.containerBuilder.Populate(services);
+                var res=client.ConnectServer(Topic.ToArray());
                 if (res.IsSuccess)
                 {
-                    IsConnect = true;
+                    MessageClientState.IsSuccess = true;
                     Console.WriteLine("数据中心服务连接成功！");
                 }
                 Console.WriteLine(res);
@@ -108,12 +124,12 @@ namespace ESTCore.Message.Services
                   {
                       while (!IsDispose)
                       {
-                          if (!IsConnect)
+                          if (!MessageClientState.IsSuccess)
                           {
-                              var res = client.ConnectServer(Topic);
+                              var res = client.ConnectServer(Topic.ToArray());
                               if (res.IsSuccess)
                               {
-                                  IsConnect = true;
+                                  MessageClientState.IsSuccess = true;
                                   Console.WriteLine("数据中心服务连接成功！");
                               }
                               else

@@ -31,15 +31,11 @@ namespace ESTCore.Message.Handler
     /// </summary>
     public class MessageCenterServerEventHandler
     {
-        WebSocketServer webSocket;
-        private ServerContext serverContext;
-        public MessageCenterServerEventHandler(WebSocketServer webSocket = null)
+        public MessageCenterServerEventHandler()
         {
-            this.webSocket = webSocket;
-            this.serverContext = new ServerContext(this.webSocket);
         }
         /// <summary>
-        /// 接收消息信息
+        /// 接收消息信息,并根据消息主题发送到对应的转换器，再由转换器进行分配消息
         /// </summary>
         /// <param name="session"></param>
         /// <param name="message"></param>
@@ -48,12 +44,12 @@ namespace ESTCore.Message.Handler
             // 对消息进行处理 
             if (message != null)
             {
-                var messageInstance = new BaseMessage(message.Payload);
+                var messageInstance = BaseMessage.ResolveMessage(message.Payload);
                 // 获取转换机实例并发送消息
                 var repeater = EngineContext.Current.ResolveNamed<IMessageRepeaterHandler>(messageInstance.Topic);
                 if (repeater != null)
                 {
-                    repeater.Repeater(messageInstance, this.serverContext);
+                    repeater.Repeater(messageInstance);
                 }
             }
         }

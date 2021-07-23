@@ -70,8 +70,11 @@ namespace ESTCore.Message
                 wsServer.OnClientDisConnected += this.serverEventHandler.ClientDisConencted;
                 wsServer.ServerStart(int.Parse(config["WebHost:Port"]));
                 // 注册实例
-                services.AddSingleton(wsServer);
-
+                services.AddSingleton<WebSocketServer>(a=>{
+                    return wsServer;
+                }); 
+                // 注册消息服务提供者对象
+                services.AddSingleton<IMessageServerProvider, MessageServerProvider>();
                 this.containerBuilder.Populate(this.services); // 合并服务
                 Console.WriteLine($"WebSocket 服务已启动：{wsServer.Port}");
             }
