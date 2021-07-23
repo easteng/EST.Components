@@ -11,8 +11,6 @@
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
-using MassTransit;
-
 using Microsoft.Extensions.Configuration;
 
 using System;
@@ -28,11 +26,9 @@ namespace ESTCore.Message
     /// </summary>
     public class CommandSender : ICommandSender
     {
-        readonly IBus _bus;
         readonly IConfiguration config;
-        public CommandSender(IBus bus = null, IConfiguration config = null)
+        public CommandSender(IConfiguration config = null)
         {
-            _bus = bus;
             this.config = config;
         }
         /// <summary>
@@ -44,18 +40,14 @@ namespace ESTCore.Message
         public async Task Send<TMessage>(TMessage message) where TMessage : IBaseMessage
         {
             var url = new Uri($"{config["Rabbitmq:Host"]}/{message.Topic}");
-            var point = await _bus.GetSendEndpoint(url);
-            await point.Send(message);
         }
     }
 
     public class CommandSender<T> : ICommandSender<T> where T : class, IBaseMessage
     {
-        readonly IBus _bus;
         readonly IConfiguration config;
-        public CommandSender(IBus bus = null, IConfiguration config = null)
+        public CommandSender( IConfiguration config = null)
         {
-            _bus = bus;
             this.config = config;
         }
         /// <summary>
@@ -67,7 +59,6 @@ namespace ESTCore.Message
         public async Task Push(ServiceType type, ServiceStatus status)
         {
             var messsage = MessageCenter.CreateMessage<T>(type, status);
-            await _bus.Publish<T>(messsage);
         }
 
         /// <summary>
@@ -80,8 +71,6 @@ namespace ESTCore.Message
         {
             var messsage = MessageCenter.CreateMessage<T>(type, status);
             var url = new Uri($"{config["Rabbitmq:Host"]}/{messsage.Topic}");
-            var point = await _bus.GetSendEndpoint(url);
-            await point.Send(messsage);
         }
     }
 }

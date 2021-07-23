@@ -12,8 +12,11 @@
 ***********************************************************************
  */
 using ESTCore.Common.WebSocket;
+using ESTCore.Message.Message;
 
 using Newtonsoft.Json;
+
+using Silky.Lms.Core;
 
 using System;
 using System.Collections.Generic;
@@ -29,12 +32,11 @@ namespace ESTCore.Message.Handler
     public class MessageCenterServerEventHandler
     {
         WebSocketServer webSocket;
-        IMessageRepeaterHandler<HealthCheckMessage> healthRepeater; 
-        public MessageCenterServerEventHandler(WebSocketServer webSocket = null,
-            IMessageRepeaterHandler<HealthCheckMessage> healthRepeater = null)
+        private ServerContext serverContext;
+        public MessageCenterServerEventHandler(WebSocketServer webSocket = null)
         {
             this.webSocket = webSocket;
-            this.healthRepeater = healthRepeater;
+            this.serverContext = new ServerContext(this.webSocket);
         }
         /// <summary>
         /// 接收消息信息
@@ -44,27 +46,15 @@ namespace ESTCore.Message.Handler
         public void MessageReveive(WebSocketSession session, WebSocketMessage message)
         {
             // 对消息进行处理 
-            if (message != null && message.HasMask)
+            if (message != null)
             {
-                // 转发的信息必须有掩码
-                var obj = GetMessage(message.Payload);
-                if (obj.GetType() == typeof(HealthCheckMessage))
+                var messageInstance = new BaseMessage(message.Payload);
+                // 获取转换机实例并发送消息
+                var repeater = EngineContext.Current.ResolveNamed<IMessageRepeaterHandler>(messageInstance.Topic);
+                if (repeater != null)
                 {
-
+                    repeater.Repeater(messageInstance, this.serverContext);
                 }
-            }
-        }
-
-        public object GetMessage(byte[] data)
-        {
-            try
-            {
-                var str = Encoding.Default.GetString(data);
-                return JsonConvert.DeserializeObject(str);
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException("参数有问题，请检查");
             }
         }
 
