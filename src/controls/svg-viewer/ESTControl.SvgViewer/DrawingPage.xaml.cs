@@ -671,7 +671,7 @@ namespace ESTControl.SvgViewer
                         }
 
                         //  var bade = new Badge();
-                        var point = e.GetPosition(svgViewer);.
+                        var point = e.GetPosition(svgViewer);
                         // 获取点击的点坐标 过滤自定义的内容
                         if (targetElement!=null)
                         {
