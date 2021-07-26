@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="FreeSql" Version="2.5.200" />
     <PackageReference Include="FreeSql.Provider.PostgreSQL" Version="2.5.200" />
+    <PackageReference Include="FreeSql.Provider.Sqlite" Version="2.5.200" />
     <PackageReference Include="FreeSql.Repository" Version="2.5.200" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="Silky.Lms.AutoMapper" Version="1.0.2" />

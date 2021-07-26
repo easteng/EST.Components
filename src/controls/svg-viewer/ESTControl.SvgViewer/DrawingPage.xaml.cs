@@ -165,30 +165,31 @@ namespace ESTControl.SvgViewer
         {
             try
             {
-                this.Dispatcher.BeginInvoke(() => {
-                    foreach (FrameworkElement item in this.eastenMain.Children)
-                    {
+               Dispatcher.BeginInvoke(new Action(()=>
+               {
+                   foreach (FrameworkElement item in this.eastenMain.Children)
+                   {
                        // 通过反射获取组件的SetValue 方法
                        if (name.Contains(item.Name))
-                        {
-                            var methodInfos = item.GetType().GetMethods();
-                            Object[] paras = new Object[] { code, value, state };
-                            for (int i = 0; i < methodInfos.Length; i++)
-                            {
-                                var md = methodInfos[i];
-                                //方法名
-                                string mothodName = md.Name;
-                                //参数集合
-                                ParameterInfo[] paramInfos = md.GetParameters();
-                                //方法名相同且参数个数一样
-                                if (mothodName == "SetValue" && paramInfos.Length == paras.Length)
-                                {
-                                    md.Invoke(item, paras);
-                                }
-                            }
-                        }
-                    }
-                });
+                       {
+                           var methodInfos = item.GetType().GetMethods();
+                           Object[] paras = new Object[] { code, value, state };
+                           for (int i = 0; i < methodInfos.Length; i++)
+                           {
+                               var md = methodInfos[i];
+                               //方法名
+                               string mothodName = md.Name;
+                               //参数集合
+                               ParameterInfo[] paramInfos = md.GetParameters();
+                               //方法名相同且参数个数一样
+                               if (mothodName == "SetValue" && paramInfos.Length == paras.Length)
+                               {
+                                   md.Invoke(item, paras);
+                               }
+                           }
+                       }
+                   }
+               }));
             }
             catch (Exception ex)
             {

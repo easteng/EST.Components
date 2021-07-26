@@ -53,6 +53,8 @@ namespace ESTCore.ORM.FreeSql
                 return DataType.PostgreSQL;
             else if (type == "mssql")
                 return DataType.SqlServer;
+            else if (type == "sqlite")
+                return DataType.Sqlite;
             else return DataType.Sqlite;
         }
     }

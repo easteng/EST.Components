@@ -47,20 +47,6 @@ namespace ESTCore.Caching
             var services = new ServiceCollection();
             services.AddEasyCaching(options =>
             {
-                //options.UseInMemory("defaut");
-                //options.UseInMemory(config =>
-                //{
-                //    config.DBConfig = new EasyCaching.InMemory.InMemoryCachingOptions
-                //    {
-                //        ExpirationScanFrequency = 60,
-                //        SizeLimit = 100,
-                //    };
-                //    config.MaxRdSecond = 120;
-                //    config.EnableLogging = false;
-                //    config.LockMs = 5000;
-                //    config.SleepMs = 300;
-                //}, "m2");
-
                 options.UseRedis(c =>
                 {
                     RedisDBOptions option = new RedisDBOptions();

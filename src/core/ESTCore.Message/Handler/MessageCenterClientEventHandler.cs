@@ -35,13 +35,22 @@ namespace ESTCore.Message.Handler
             // 接收到消息，进行处理，有可能消息，有可能是命令消息
             if (message != null)
             {
-                var messageInstance = BaseMessage.ResolveMessage(message.Payload);
-                // 获取转换机实例并发送消息
-                var repeater = EngineContext.Current.ResolveNamed<IMessageReceiverHandler>(messageInstance.Topic);
-                if (repeater != null)
+                // 处理线程报错问题
+                try
                 {
-                    repeater.Receive(messageInstance);
+                    var messageInstance = BaseMessage.ResolveMessage(message.Payload);
+                    // 获取转换机实例并发送消息
+                    var repeater = EngineContext.Current.ResolveNamed<IMessageReceiverHandler>(messageInstance.Topic);
+                    if (repeater != null)
+                    {
+                        repeater.Receive(messageInstance);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                
             }
         }
 
