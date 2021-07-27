@@ -28,13 +28,13 @@ namespace MassTransitTest3
     /// <summary>
     ///  
     /// </summary>
-    public class HealthConsumer : IConsumer<ServiceStatusMessage>
-    {
-        public async Task Consume(ConsumeContext<ServiceStatusMessage> context)
-        {
-            var message = context.Message;
-            Console.WriteLine($"{message.ServiceType.GetDisplay()}:{message.Status.GetDisplay()}：{message.Time}");
-            await context.RespondAsync<CheckMessageStatus>(new { Ok = true });  // 相应
-        }
-    }
+    //public class HealthConsumer : IConsumer<ServiceStatusMessage>
+    //{
+    //    public async Task Consume(ConsumeContext<ServiceStatusMessage> context)
+    //    {
+    //        var message = context.Message;
+    //        Console.WriteLine($"{message.ServiceType.GetDisplay()}:{message.Status.GetDisplay()}：{message.Time}");
+    //        await context.RespondAsync<CheckMessageStatus>(new { Ok = true });  // 相应
+    //    }
+    //}
 }

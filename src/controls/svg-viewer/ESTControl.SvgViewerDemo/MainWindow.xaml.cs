@@ -54,7 +54,7 @@ namespace ESTControl.SvgViewerDemo
             style.ShowBadge = true;
             var ele = CustomUIElement.CreateCustomUIElement(style, $"name_{DateTime.Now.ToString("YYYYmmddHHmmss")}", e);
             this.mainViewModel.SetPoint(e);
-            this.svgContainer.AddUIElement(ele);
+            //this.svgContainer.AddUIElement(ele);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

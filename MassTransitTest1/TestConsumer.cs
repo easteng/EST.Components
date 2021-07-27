@@ -24,12 +24,12 @@ using System.Threading.Tasks;
 
 namespace MassTransitTest1
 {
-    public class TestConsumer : IMessageRepeaterHandler<HealthCheckMessage>
-    {
-        public Task Repeater(StandardMessage<HealthCheckMessage> message, IMessageServerProvider context)
-        {
-            //throw new NotImplementedException();
-            return Task.CompletedTask;
-        }
-    }
+    //public class TestConsumer : IMessageRepeaterHandler<HealthCheckMessage>
+    //{
+    //    public Task Repeater(StandardMessage<HealthCheckMessage> message, IMessageServerProvider context)
+    //    {
+    //        //throw new NotImplementedException();
+    //        return Task.CompletedTask;
+    //    }
+    //}
 }

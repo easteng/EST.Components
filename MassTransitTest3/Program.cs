@@ -35,8 +35,8 @@ namespace MassTransitTest3
                 .ConfigureAppConfiguration((host, config) =>
                 {
                     config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-                })
-                .RegisterLmsServices<TestModule>();  // 注册服务
+                });
+             //   .RegisterLmsServices<TestModule>();  // 注册服务
             return host;
         }
     }

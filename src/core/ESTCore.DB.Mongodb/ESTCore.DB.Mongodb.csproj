@@ -8,4 +8,8 @@
     <OutputPath>..\..\..\package-output\</OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ESTCore.Domain\ESTCore.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
