@@ -9,4 +9,8 @@
     <PackageReference Include="Masuit.Tools.Core" Version="2.4.3.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ESTCore.Tcp\ESTCore.Tcp.csproj" />
+  </ItemGroup>
+
 </Project>

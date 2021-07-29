@@ -258,7 +258,7 @@ namespace ESTTool.Excel
         /// <param name="stream">文件流</param>
         /// <param name="fileName">文件名称</param>
         /// <returns></returns>
-        public static IWorkbook GetWorkbookByStream(Stream stream, string fileName)
+        public static IWorkbook GetWorkbookByStream(this Stream stream, string fileName)
         {
             // 判断是不是文件
             if (fileName.EndsWith(".xlsx"))
@@ -381,6 +381,10 @@ namespace ESTTool.Excel
             else if (valueType == typeof(decimal))
             {
                 return decimal.Parse(value);
+            }
+            else if (valueType == typeof(double))
+            {
+                return double.Parse(value);
             }
             else
             {

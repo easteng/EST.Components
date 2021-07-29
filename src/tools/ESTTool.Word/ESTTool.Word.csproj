@@ -4,6 +4,10 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\..\nupackage</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="DotNetCore.NPOI" Version="1.2.3" />
   </ItemGroup>

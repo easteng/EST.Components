@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\" />
+    <Folder Include="TcpServer\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NetCoreServer" Version="5.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\core\ESTCore.Common\ESTCore.Common.csproj" />
+  </ItemGroup>
+
+</Project>

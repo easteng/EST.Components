@@ -1,6 +1,9 @@
-﻿using Masuit.Tools.Hardware;
+﻿using ESTCore.Tcp;
+
+using Masuit.Tools.Hardware;
 
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,29 +13,27 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-           
-            long physicalMemory = SystemInfo.PhysicalMemory;// 获取物理内存总数
-            long memoryAvailable = SystemInfo.MemoryAvailable;// 获取物理内存可用率
-            double freePhysicalMemory = SystemInfo.GetFreePhysicalMemory();// 获取可用物理内存
-            
-            int cpuCount = SystemInfo.GetCpuCount();// 获取CPU核心数
-            //IList<string> ipAddress = SystemInfo.GetIPAddress();// 获取本机所有IP地址
-            //string localUsedIp = SystemInfo.GetLocalUsedIP();// 获取本机当前正在使用的IP地址
-          //  IList<string> macAddress = SystemInfo.GetMacAddress();// 获取本机所有网卡mac地址
-          //  string osVersion = SystemInfo.GetOsVersion();// 获取操作系统版本
-            RamInfo ramInfo = SystemInfo.GetRamInfo();// 获取内存信息
-            var cpuSN = SystemInfo.GetCpuInfo()[0].SerialNumber; // CPU序列号
-                                                                 //var driveSN = SystemInfo.GetDiskInfo()[0].SerialNumber; // 硬盘序列号
+            var ipendPoint = new IPEndPoint(IPAddress.Parse("192.168.1.254"), 30003);
+            ESTModbusTcpClient client = new ESTModbusTcpClient(ipendPoint);
+            client.ConnectAsync();
 
-            while (true)
-            {
-                double temperature = SystemInfo.GetCPUTemperature();// 获取CPU温度
-                float load = SystemInfo.CpuLoad;// 获取CPU占用率
-                Console.WriteLine(temperature);
-                Thread.Sleep(1000);
-            }
-            Console.WriteLine("Hello World!");
+            client.Read((byte)1, "00", 2);
+            //var aaa = "01 03 00 00 00 02 C4 0B";
+            //var ccc = StringToHexByte(aaa);
+            //client.SendAsync(ccc);
+
             Console.Read();
+        }
+
+        public static byte[] StringToHexByte(string hexString)
+        {
+            hexString = hexString.Replace(" ", "");
+            if (hexString.Length % 2 != 0)
+                hexString += " ";
+            var returnBytes = new byte[hexString.Length / 2];
+            for (var i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            return returnBytes;
         }
     }
 }
