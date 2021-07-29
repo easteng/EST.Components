@@ -262,8 +262,6 @@ namespace ESTCore.Common.Core.Net
         {
             if (data == null)
                 return OperateResult.CreateSuccessResult();
-            if (!ESTCore.Common.Authorization.nzugaydgwadawdibbas())
-                return (OperateResult)new OperateResult<byte[]>(StringResources.Language.AuthorizationFailed);
             try
             {
                 int num1 = 0;

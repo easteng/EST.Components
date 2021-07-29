@@ -32,7 +32,7 @@ namespace ESTCore.Common.Core
         /// <param name="receive">接收的长度</param>
         /// <param name="reportProgress">当前接收数据的进度报告，有些协议支持传输非常大的数据内容，可以给与进度提示的功能</param>
         /// <returns>最终接收的指定长度的byte[]数据</returns>
-        internal static byte[] ReadBytesFromSocket(
+        public static byte[] ReadBytesFromSocket(
           Socket socket,
           int receive,
           Action<long, long> reportProgress = null)

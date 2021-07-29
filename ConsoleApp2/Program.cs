@@ -1,4 +1,5 @@
-﻿using ESTCore.Tcp;
+﻿using ESTCore.Common;
+using ESTCore.Tcp;
 
 using Masuit.Tools.Hardware;
 
@@ -13,14 +14,32 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            var ipendPoint = new IPEndPoint(IPAddress.Parse("192.168.1.254"), 30003);
-            ESTModbusTcpClient client = new ESTModbusTcpClient(ipendPoint);
-            client.ConnectAsync();
+            //var ipendPoint = new IPEndPoint(IPAddress.Parse("192.168.1.254"), 30003);
+            //ESTModbusTcpClient client = new ESTModbusTcpClient(ipendPoint);
+            //client.ConnectAsync();
 
-            client.Read((byte)1, "00", 2);
-            //var aaa = "01 03 00 00 00 02 C4 0B";
-            //var ccc = StringToHexByte(aaa);
-            //client.SendAsync(ccc);
+            //client.Read((byte)1, "00", 2);
+            ////var aaa = "01 03 00 00 00 02 C4 0B";
+            ////var ccc = StringToHexByte(aaa);
+            ////client.SendAsync(ccc);
+            ///
+
+            ESTModbusTcpNet client = new ESTModbusTcpNet();
+            client.CreateAndConnectTcpClient("127.0.0.1", 502);
+            while (true)
+            {
+               var res= client.Read("00", 2);
+                if (res.IsSuccess)
+                {
+                    Console.WriteLine(res.Content.ToHexString());
+                }
+
+                Thread.Sleep(1000);
+            }
+
+
+
+
 
             Console.Read();
         }
