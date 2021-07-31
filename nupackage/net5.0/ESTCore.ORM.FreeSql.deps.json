@@ -1,0 +1,627 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "ESTCore.ORM.FreeSql/1.0.0": {
+        "dependencies": {
+          "FreeSql": "2.5.200",
+          "FreeSql.Provider.PostgreSQL": "2.5.200",
+          "FreeSql.Provider.Sqlite": "2.5.200",
+          "FreeSql.Repository": "2.5.200",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0",
+          "Silky.Lms.AutoMapper": "1.0.2",
+          "Silky.Lms.Core": "1.0.2"
+        },
+        "runtime": {
+          "ESTCore.ORM.FreeSql.dll": {}
+        }
+      },
+      "Autofac/6.1.0": {
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "4.7.1"
+        },
+        "runtime": {
+          "lib/net5.0/Autofac.dll": {
+            "assemblyVersion": "6.1.0.0",
+            "fileVersion": "6.1.0.0"
+          }
+        }
+      },
+      "Autofac.Extensions.DependencyInjection/7.1.0": {
+        "dependencies": {
+          "Autofac": "6.1.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/Autofac.Extensions.DependencyInjection.dll": {
+            "assemblyVersion": "7.1.0.0",
+            "fileVersion": "7.1.0.0"
+          }
+        }
+      },
+      "AutoMapper/10.1.1": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "System.Reflection.Emit": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/AutoMapper.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.1.1.0"
+          }
+        }
+      },
+      "FreeSql/2.5.200": {
+        "runtime": {
+          "lib/netstandard2.0/FreeSql.dll": {
+            "assemblyVersion": "2.5.200.0",
+            "fileVersion": "2.5.200.0"
+          }
+        }
+      },
+      "FreeSql.DbContext/2.5.200": {
+        "dependencies": {
+          "FreeSql": "2.5.200",
+          "Microsoft.Extensions.DependencyInjection": "5.0.0"
+        },
+        "runtime": {
+          "lib/net5.0/FreeSql.DbContext.dll": {
+            "assemblyVersion": "2.5.200.0",
+            "fileVersion": "2.5.200.0"
+          }
+        }
+      },
+      "FreeSql.Provider.PostgreSQL/2.5.200": {
+        "dependencies": {
+          "FreeSql": "2.5.200",
+          "Newtonsoft.Json": "12.0.3",
+          "Npgsql.LegacyPostgis": "5.0.3",
+          "Npgsql.NetTopologySuite": "5.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FreeSql.Provider.PostgreSQL.dll": {
+            "assemblyVersion": "2.5.200.0",
+            "fileVersion": "2.5.200.0"
+          }
+        }
+      },
+      "FreeSql.Provider.Sqlite/2.5.200": {
+        "dependencies": {
+          "FreeSql": "2.5.200",
+          "System.Data.SQLite.Core": "1.0.113.7"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FreeSql.Provider.Sqlite.dll": {
+            "assemblyVersion": "2.5.200.0",
+            "fileVersion": "2.5.200.0"
+          }
+        }
+      },
+      "FreeSql.Repository/2.5.200": {
+        "dependencies": {
+          "FreeSql.DbContext": "2.5.200"
+        },
+        "runtime": {
+          "lib/net5.0/FreeSql.Repository.dll": {
+            "assemblyVersion": "2.5.200.0",
+            "fileVersion": "2.5.200.0"
+          }
+        }
+      },
+      "JetBrains.Annotations/2019.1.3": {
+        "runtime": {
+          "lib/netstandard2.0/JetBrains.Annotations.dll": {
+            "assemblyVersion": "2019.1.3.0",
+            "fileVersion": "2019.1.3.0"
+          }
+        }
+      },
+      "Microsoft.CSharp/4.7.0": {},
+      "Microsoft.Extensions.Configuration/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "2.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Abstractions/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "2.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.FileExtensions/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "2.0.0",
+          "Microsoft.Extensions.FileProviders.Physical": "2.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/5.0.0": {},
+      "Microsoft.Extensions.FileProviders.Abstractions/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "2.0.0"
+        }
+      },
+      "Microsoft.Extensions.FileProviders.Physical/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.FileProviders.Abstractions": "2.0.0",
+          "Microsoft.Extensions.FileSystemGlobbing": "2.0.0"
+        }
+      },
+      "Microsoft.Extensions.FileSystemGlobbing/2.0.0": {},
+      "Microsoft.Extensions.Primitives/2.0.0": {
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "4.6.0"
+        }
+      },
+      "Microsoft.NETCore.Platforms/5.0.0": {},
+      "NetEscapades.Configuration.Yaml/2.1.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "2.0.0",
+          "Microsoft.Extensions.Configuration.FileExtensions": "2.0.0",
+          "YamlDotNet": "9.1.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetEscapades.Configuration.Yaml.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
+          }
+        }
+      },
+      "NetTopologySuite/2.0.0": {
+        "dependencies": {
+          "System.Memory": "4.5.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetTopologySuite.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
+      "NetTopologySuite.IO.PostGis/2.0.0": {
+        "dependencies": {
+          "NetTopologySuite": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetTopologySuite.IO.PostGis.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
+      "Newtonsoft.Json/12.0.3": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.3.23909"
+          }
+        }
+      },
+      "Npgsql/5.0.3": {
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "4.6.0"
+        },
+        "runtime": {
+          "lib/net5.0/Npgsql.dll": {
+            "assemblyVersion": "5.0.3.0",
+            "fileVersion": "5.0.3.0"
+          }
+        }
+      },
+      "Npgsql.LegacyPostgis/5.0.3": {
+        "dependencies": {
+          "Npgsql": "5.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Npgsql.LegacyPostgis.dll": {
+            "assemblyVersion": "5.0.3.0",
+            "fileVersion": "5.0.3.0"
+          }
+        }
+      },
+      "Npgsql.NetTopologySuite/5.0.3": {
+        "dependencies": {
+          "NetTopologySuite.IO.PostGis": "2.0.0",
+          "Npgsql": "5.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Npgsql.NetTopologySuite.dll": {
+            "assemblyVersion": "5.0.3.0",
+            "fileVersion": "5.0.3.0"
+          }
+        }
+      },
+      "Silky.Lms.AutoMapper/1.0.2": {
+        "dependencies": {
+          "AutoMapper": "10.1.1",
+          "Silky.Lms.Core": "1.0.2"
+        },
+        "runtime": {
+          "lib/net5.0/Silky.Lms.AutoMapper.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
+        }
+      },
+      "Silky.Lms.Core/1.0.2": {
+        "dependencies": {
+          "Autofac": "6.1.0",
+          "Autofac.Extensions.DependencyInjection": "7.1.0",
+          "JetBrains.Annotations": "2019.1.3",
+          "NetEscapades.Configuration.Yaml": "2.1.0",
+          "Newtonsoft.Json": "12.0.3",
+          "System.IO.FileSystem.AccessControl": "5.0.0",
+          "System.Linq.Async": "5.0.0"
+        },
+        "runtime": {
+          "lib/net5.0/Silky.Lms.Core.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
+        }
+      },
+      "Stub.System.Data.SQLite.Core.NetStandard/1.0.113.2": {
+        "runtime": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {
+            "assemblyVersion": "1.0.113.0",
+            "fileVersion": "1.0.113.0"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/SQLite.Interop.dll": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx-x64/native/SQLite.Interop.dll": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/SQLite.Interop.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "1.0.113.0"
+          },
+          "runtimes/win-x86/native/SQLite.Interop.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "1.0.113.0"
+          }
+        }
+      },
+      "System.Data.SQLite.Core/1.0.113.7": {
+        "dependencies": {
+          "Stub.System.Data.SQLite.Core.NetStandard": "1.0.113.2"
+        }
+      },
+      "System.Diagnostics.DiagnosticSource/4.7.1": {},
+      "System.IO.FileSystem.AccessControl/5.0.0": {
+        "dependencies": {
+          "System.Security.AccessControl": "5.0.0",
+          "System.Security.Principal.Windows": "5.0.0"
+        }
+      },
+      "System.Linq.Async/5.0.0": {
+        "runtime": {
+          "lib/netcoreapp3.1/System.Linq.Async.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.1"
+          }
+        }
+      },
+      "System.Memory/4.5.3": {},
+      "System.Reflection.Emit/4.7.0": {},
+      "System.Runtime.CompilerServices.Unsafe/4.6.0": {},
+      "System.Security.AccessControl/5.0.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "5.0.0",
+          "System.Security.Principal.Windows": "5.0.0"
+        }
+      },
+      "System.Security.Principal.Windows/5.0.0": {},
+      "YamlDotNet/9.1.0": {
+        "runtime": {
+          "lib/netstandard2.1/YamlDotNet.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.1.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ESTCore.ORM.FreeSql/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Autofac/6.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-22aXncFDye08TsXHobcxAoZFBeaJ9nrAxGzk9YHLLaIkYO7aeAA0Sz7Mii9qsfB76S1gdhebqMv8QsnknJMT/w==",
+      "path": "autofac/6.1.0",
+      "hashPath": "autofac.6.1.0.nupkg.sha512"
+    },
+    "Autofac.Extensions.DependencyInjection/7.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nm6rZREZ9tjdKXu9cmT69zHkZODagjCPlRRCOhiS1VqFFis9LQnMl18L4OYr8yfCW1WAQkFDD2CNaK/kF5Eqeg==",
+      "path": "autofac.extensions.dependencyinjection/7.1.0",
+      "hashPath": "autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512"
+    },
+    "AutoMapper/10.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uMgbqOdu9ZG5cIOty0C85hzzayBH2i9BthnS5FlMqKtMSHDv4ts81a2jS1VFaDBVhlBeIqJ/kQKjQY95BZde9w==",
+      "path": "automapper/10.1.1",
+      "hashPath": "automapper.10.1.1.nupkg.sha512"
+    },
+    "FreeSql/2.5.200": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lBWses/QVJQkothKmmGskq8FKkkEL99acak4jmDHgheC+XgnP0I8CC69yvfvKR7XFeYc01BXgSTzz8KhYx7OPQ==",
+      "path": "freesql/2.5.200",
+      "hashPath": "freesql.2.5.200.nupkg.sha512"
+    },
+    "FreeSql.DbContext/2.5.200": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-07OFFm6RjL/WWgf2GLIhnNO3F5wQIwYg7mCsWpDlLkvTmLjqzRUAtnvwXjhV1ZXeV3HPQJvtQ822cDTaR9BHtg==",
+      "path": "freesql.dbcontext/2.5.200",
+      "hashPath": "freesql.dbcontext.2.5.200.nupkg.sha512"
+    },
+    "FreeSql.Provider.PostgreSQL/2.5.200": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FZlSpmF5lZjMjUQx+/M9e/ZTE3bZ1lLM44OrWEd0DPKBL+QTeEjDCrfiRA8ki1szKaZzwCOGGUawebsUSYkq+Q==",
+      "path": "freesql.provider.postgresql/2.5.200",
+      "hashPath": "freesql.provider.postgresql.2.5.200.nupkg.sha512"
+    },
+    "FreeSql.Provider.Sqlite/2.5.200": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-82D1MDDdLX7Xsds0mQ0ZAr73uklL20eAT5xVMnTbouqoPz7p58ma3yR5L8+TbjkJ4ytsbW6w2csL2B+MR0IvCg==",
+      "path": "freesql.provider.sqlite/2.5.200",
+      "hashPath": "freesql.provider.sqlite.2.5.200.nupkg.sha512"
+    },
+    "FreeSql.Repository/2.5.200": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AZQfHWebUCJb8PW12upK61e0f3dVoazCz4X+li48QWmLawsyWiqDaJv+91M69JpXrimHae4fsHwO7iRgMYF6/w==",
+      "path": "freesql.repository/2.5.200",
+      "hashPath": "freesql.repository.2.5.200.nupkg.sha512"
+    },
+    "JetBrains.Annotations/2019.1.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-E0x48BwZJKoNMNCekWGKsV4saQS89lf58ydT2szseV44CMYIbaHXjc7+305WLw6up3ibZN9yH6QdGSZo5tQhLg==",
+      "path": "jetbrains.annotations/2019.1.3",
+      "hashPath": "jetbrains.annotations.2019.1.3.nupkg.sha512"
+    },
+    "Microsoft.CSharp/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA==",
+      "path": "microsoft.csharp/4.7.0",
+      "hashPath": "microsoft.csharp.4.7.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SsI4RqI8EH00+cYO96tbftlh87sNUv1eeyuBU1XZdQkG0RrHAOjWgl7P0FoLeTSMXJpOnfweeOWj2d1/5H3FxA==",
+      "path": "microsoft.extensions.configuration/2.0.0",
+      "hashPath": "microsoft.extensions.configuration.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Abstractions/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rHFrXqMIvQNq51H8RYTO4IWmDOYh8NUzyqGlh0xHWTP6XYnKk7Ryinys2uDs+Vu88b3AMlM3gBBSs78m6OQpYQ==",
+      "path": "microsoft.extensions.configuration.abstractions/2.0.0",
+      "hashPath": "microsoft.extensions.configuration.abstractions.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.FileExtensions/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ebFbu+vsz4rzeAICWavk9a0FutWVs7aNZap5k/IVxVhu2CnnhOp/H/gNtpzplrqjYDaNYdmv9a/DoUvH2ynVEQ==",
+      "path": "microsoft.extensions.configuration.fileextensions/2.0.0",
+      "hashPath": "microsoft.extensions.configuration.fileextensions.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Rc2kb/p3Ze6cP6rhFC3PJRdWGbLvSHZc0ev7YlyeU6FmHciDMLrhoVoTUEzKPhN5ZjFgKF1Cf5fOz8mCMIkvpA==",
+      "path": "microsoft.extensions.dependencyinjection/5.0.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ORj7Zh81gC69TyvmcUm9tSzytcy8AVousi+IVRAI8nLieQjOFryRusSFh7+aLk16FN9pQNqJAiMd7BTKINK0kA==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/5.0.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.FileProviders.Abstractions/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Z0AK+hmLO33WAXQ5P1uPzhH7z5yjDHX/XnUefXxE//SyvCb9x4cVjND24dT5566t/yzGp8/WLD7EG9KQKZZklQ==",
+      "path": "microsoft.extensions.fileproviders.abstractions/2.0.0",
+      "hashPath": "microsoft.extensions.fileproviders.abstractions.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.FileProviders.Physical/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DKO2j2socZbHNCCVEWsLVpB3AQIIzKYFNyITVeWdA1jQ829GJIQf4MUD04+1c+Q2kbK03pIKQZmEy4CGIfgDZw==",
+      "path": "microsoft.extensions.fileproviders.physical/2.0.0",
+      "hashPath": "microsoft.extensions.fileproviders.physical.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.FileSystemGlobbing/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UC87vRDUB7/vSaNY/FVhbdAyRkfFBTkYmcUoglxk6TyTojhSqYaG5pZsoP4e1ZuXktFXJXJBTvK8U/QwCo0z3g==",
+      "path": "microsoft.extensions.filesystemglobbing/2.0.0",
+      "hashPath": "microsoft.extensions.filesystemglobbing.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Primitives/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ukg53qNlqTrK38WA30b5qhw0GD7y3jdI9PHHASjdKyTcBHTevFM2o23tyk3pWCgAV27Bbkm+CPQ2zUe1ZOuYSA==",
+      "path": "microsoft.extensions.primitives/2.0.0",
+      "hashPath": "microsoft.extensions.primitives.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VyPlqzH2wavqquTcYpkIIAQ6WdenuKoFN0BdYBbCWsclXacSOHNQn66Gt4z5NBqEYW0FAPm5rlvki9ZiCij5xQ==",
+      "path": "microsoft.netcore.platforms/5.0.0",
+      "hashPath": "microsoft.netcore.platforms.5.0.0.nupkg.sha512"
+    },
+    "NetEscapades.Configuration.Yaml/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kNTX7kvRvbzBpLd3Vg9iu6t60tTyhVxsruAPgH6kl1GkAZIHLZw9cQysvjUenDU7JEnUgyxQnzfL8627ARDn+g==",
+      "path": "netescapades.configuration.yaml/2.1.0",
+      "hashPath": "netescapades.configuration.yaml.2.1.0.nupkg.sha512"
+    },
+    "NetTopologySuite/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3ajBClEI9wx2/DjjGmV52sHW1m52vLg8sdz1pJbTf5ySj1X90qehQs3v1DRwGo0F8UKj/Z2SjNhRN/6LroAkqg==",
+      "path": "nettopologysuite/2.0.0",
+      "hashPath": "nettopologysuite.2.0.0.nupkg.sha512"
+    },
+    "NetTopologySuite.IO.PostGis/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-f4PAE9VTUfM8w+SOlFcsvn5/S9e5SQywmEPsCMAVgfiemwHw9NKSB4Jnn4+U/jl5hN9tUutHxpHnOUx2Pqm6Ew==",
+      "path": "nettopologysuite.io.postgis/2.0.0",
+      "hashPath": "nettopologysuite.io.postgis.2.0.0.nupkg.sha512"
+    },
+    "Newtonsoft.Json/12.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6mgjfnRB4jKMlzHSl+VD+oUc1IebOZabkbyWj2RiTgWwYPPuaK1H97G1sHqGwPlS5npiF5Q0OrxN1wni2n5QWg==",
+      "path": "newtonsoft.json/12.0.3",
+      "hashPath": "newtonsoft.json.12.0.3.nupkg.sha512"
+    },
+    "Npgsql/5.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IDx2tijhyXGz7tVXQH0iGnCnW0ReSUy3UC99ytSklJKscob5WV8eLZWuT/jqYBq0l07RmZOSrdjUEDEetsgDIA==",
+      "path": "npgsql/5.0.3",
+      "hashPath": "npgsql.5.0.3.nupkg.sha512"
+    },
+    "Npgsql.LegacyPostgis/5.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TSNz5gL5dCQCRTWRFiPWv6ziu/s0S2pXSRuZoRK5aVSQbxN+3vI/YXznX9TkXfA6rEPXUF5u2IWdAPLoa0SxLg==",
+      "path": "npgsql.legacypostgis/5.0.3",
+      "hashPath": "npgsql.legacypostgis.5.0.3.nupkg.sha512"
+    },
+    "Npgsql.NetTopologySuite/5.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6rF0ZwNLQPGE7hJyp2awtAyzLXameScjBgAsBU0S9n8mmtN1EmlQXovZxl3ZzfsGuwVaJkVOG66RsEnXqv8S5g==",
+      "path": "npgsql.nettopologysuite/5.0.3",
+      "hashPath": "npgsql.nettopologysuite.5.0.3.nupkg.sha512"
+    },
+    "Silky.Lms.AutoMapper/1.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VzVp55R9Bu4brDd+dA07Sf3AwUBBUiahJfPl84DB50wkPL/KXnKxUWRNCzMjVoJXFCiAj9x04wLXF7ZrQbswVg==",
+      "path": "silky.lms.automapper/1.0.2",
+      "hashPath": "silky.lms.automapper.1.0.2.nupkg.sha512"
+    },
+    "Silky.Lms.Core/1.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-y5pFY/JGJZsDtFcSzg6Ao2o8IDj7oUFMZPjjbzvDsfoP05/xcB9uVbE75pw4C0xsF7xcMkH4YZuQMcNilxxpww==",
+      "path": "silky.lms.core/1.0.2",
+      "hashPath": "silky.lms.core.1.0.2.nupkg.sha512"
+    },
+    "Stub.System.Data.SQLite.Core.NetStandard/1.0.113.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yGIM9xFyPHl79HluNTSQarvAOIJ68pmzmlMayVN6Nivu/7TiaHt7WqptolvwmuKdAXei8OzENh9RNdh7d6evjQ==",
+      "path": "stub.system.data.sqlite.core.netstandard/1.0.113.2",
+      "hashPath": "stub.system.data.sqlite.core.netstandard.1.0.113.2.nupkg.sha512"
+    },
+    "System.Data.SQLite.Core/1.0.113.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2DKMIxfZpIVzdMfx1dj9qvTm+0m0Mx6sN6CZXMQDNytU7Sk/JKo0Ox6mvHAicfHrQgqZbUZMzMMtLXD0kwmFfg==",
+      "path": "system.data.sqlite.core/1.0.113.7",
+      "hashPath": "system.data.sqlite.core.1.0.113.7.nupkg.sha512"
+    },
+    "System.Diagnostics.DiagnosticSource/4.7.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j81Lovt90PDAq8kLpaJfJKV/rWdWuEk6jfV+MBkee33vzYLEUsy4gXK8laa9V2nZlLM9VM9yA/OOQxxPEJKAMw==",
+      "path": "system.diagnostics.diagnosticsource/4.7.1",
+      "hashPath": "system.diagnostics.diagnosticsource.4.7.1.nupkg.sha512"
+    },
+    "System.IO.FileSystem.AccessControl/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SxHB3nuNrpptVk+vZ/F+7OHEpoHUIKKMl02bUmYHQr1r+glbZQxs7pRtsf4ENO29TVm2TH3AEeep2fJcy92oYw==",
+      "path": "system.io.filesystem.accesscontrol/5.0.0",
+      "hashPath": "system.io.filesystem.accesscontrol.5.0.0.nupkg.sha512"
+    },
+    "System.Linq.Async/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cPtIuuH8TIjVHSi2ewwReWGW1PfChPE0LxPIDlfwVcLuTM9GANFTXiMB7k3aC4sk3f0cQU25LNKzx+jZMxijqw==",
+      "path": "system.linq.async/5.0.0",
+      "hashPath": "system.linq.async.5.0.0.nupkg.sha512"
+    },
+    "System.Memory/4.5.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3oDzvc/zzetpTKWMShs1AADwZjQ/36HnsufHRPcOjyRAAMLDlu2iD33MBI2opxnezcVUtXyqDXXjoFMOU9c7SA==",
+      "path": "system.memory/4.5.3",
+      "hashPath": "system.memory.4.5.3.nupkg.sha512"
+    },
+    "System.Reflection.Emit/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VR4kk8XLKebQ4MZuKuIni/7oh+QGFmZW3qORd1GvBq/8026OpW501SzT/oypwiQl4TvT8ErnReh/NzY9u+C6wQ==",
+      "path": "system.reflection.emit/4.7.0",
+      "hashPath": "system.reflection.emit.4.7.0.nupkg.sha512"
+    },
+    "System.Runtime.CompilerServices.Unsafe/4.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HxozeSlipUK7dAroTYwIcGwKDeOVpQnJlpVaOkBz7CM4TsE5b/tKlQBZecTjh6FzcSbxndYaxxpsBMz+wMJeyw==",
+      "path": "system.runtime.compilerservices.unsafe/4.6.0",
+      "hashPath": "system.runtime.compilerservices.unsafe.4.6.0.nupkg.sha512"
+    },
+    "System.Security.AccessControl/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dagJ1mHZO3Ani8GH0PHpPEe/oYO+rVdbQjvjJkBRNQkX4t0r1iaeGn8+/ybkSLEan3/slM0t59SVdHzuHf2jmw==",
+      "path": "system.security.accesscontrol/5.0.0",
+      "hashPath": "system.security.accesscontrol.5.0.0.nupkg.sha512"
+    },
+    "System.Security.Principal.Windows/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-t0MGLukB5WAVU9bO3MGzvlGnyJPgUlcwerXn1kzBRjwLKixT96XV0Uza41W49gVd8zEMFu9vQEFlv0IOrytICA==",
+      "path": "system.security.principal.windows/5.0.0",
+      "hashPath": "system.security.principal.windows.5.0.0.nupkg.sha512"
+    },
+    "YamlDotNet/9.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fuvGXU4Ec5HrsmEc+BiFTNPCRf1cGBI2kh/3RzMWgddM2M4ALhbSPoI3X3mhXZUD1qqQd9oSkFAtWjpz8z9eRg==",
+      "path": "yamldotnet/9.1.0",
+      "hashPath": "yamldotnet.9.1.0.nupkg.sha512"
+    }
+  }
+}
