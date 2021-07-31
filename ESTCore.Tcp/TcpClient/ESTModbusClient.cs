@@ -14,16 +14,14 @@
 using ESTCore.Common;
 using ESTCore.Common.BasicFramework;
 using ESTCore.Common.Core;
-using ESTCore.Common.Core.Address;
 using ESTCore.Common.ModBus;
-using ESTCore.Common.Serial;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Threading;
+
 using TcpClient = NetCoreServer.TcpClient;
 namespace ESTCore.Tcp
 {
@@ -39,6 +37,7 @@ namespace ESTCore.Tcp
         private byte operation = 0x03;
         private readonly SoftIncrementCount softIncrementCount; // 自增类
         IByteTransform ByteTransform;
+        private int connectErrorCount = 0;
         /// <summary>
         /// 重新连接时间，默认是1s
         /// </summary>
@@ -103,7 +102,7 @@ namespace ESTCore.Tcp
 
         public void ConnectServer()
         {
-            this.Connect();
+            //this.Connect();
         }
 
         private string ReadFromCoreServer(byte[] command)
@@ -134,6 +133,47 @@ namespace ESTCore.Tcp
             for (var i = 0; i < returnBytes.Length; i++)
                 returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             return returnBytes;
+        }
+
+        /// <summary>
+        /// 接收数据
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="length"></param>
+        /// <param name="timeOut"></param>
+        /// <param name="reportProgress"></param>
+        /// <returns></returns>
+        protected OperateResult<byte[]> Receive(
+        Socket socket,
+         int length,
+         int timeOut = 60000,
+         Action<long, long> reportProgress = null)
+        {
+            if (length == 0)
+                return OperateResult.CreateSuccessResult<byte[]>(new byte[0]);
+            try
+            {
+                socket.ReceiveTimeout = timeOut;
+                if (length > 0)
+                    return OperateResult.CreateSuccessResult<byte[]>(NetSupport.ReadBytesFromSocket(socket, length, reportProgress));
+                byte[] buffer = new byte[2048];
+                int length1 = socket.Receive(buffer);
+                return length1 != 0 ? OperateResult.CreateSuccessResult<byte[]>(SoftBasic.ArraySelectBegin<byte>(buffer, length1)) : throw new RemoteCloseException();
+            }
+            catch (RemoteCloseException ex)
+            {
+                socket?.Close();
+                if (this.connectErrorCount < 1000000000)
+                    ++this.connectErrorCount;
+                return new OperateResult<byte[]>(-this.connectErrorCount, "Socket Exception -> " + StringResources.Language.RemoteClosedConnection);
+            }
+            catch (Exception ex)
+            {
+                socket?.Close();
+                if (this.connectErrorCount < 1000000000)
+                    ++this.connectErrorCount;
+                return new OperateResult<byte[]>(-this.connectErrorCount, "Socket Exception -> " + ex.Message);
+            }
         }
     }
 }
