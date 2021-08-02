@@ -12,10 +12,13 @@
 ***********************************************************************
  */
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,13 +28,31 @@ namespace ESTCore.Caching
     {
         public static List<T> GetList<T>(string caching)
         {
-            var list = new List<T>();
-            return JsonConvert.DeserializeObject<List<T>>(caching);
+            if (string.IsNullOrEmpty(caching)) return null;
+            return JsonConvert.DeserializeObject<List<T>>(caching, GetDefaultSettings());
         }
 
         public static T Get<T>(string caching)
         {
-            return JsonConvert.DeserializeObject<T>(caching);  
+            if (string.IsNullOrEmpty(caching)) return default(T);
+            return JsonConvert.DeserializeObject<T>(caching, GetDefaultSettings());  
+        }
+
+        public static string GetCacheString<T>(T obj)
+        {
+            return JsonConvert.SerializeObject(obj, GetDefaultSettings());
+        }
+        public static JsonSerializerSettings GetDefaultSettings()
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                NullValueHandling = NullValueHandling.Ignore,
+            };
+          //  settings.Converters.Add(new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.RoundtripKind });
+            return settings;
         }
     }
 }
