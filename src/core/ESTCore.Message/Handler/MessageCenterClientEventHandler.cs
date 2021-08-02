@@ -56,12 +56,28 @@ namespace ESTCore.Message.Handler
 
         public void OnNetworkError(object sender, EventArgs e)
         {
+            var status = new ConnectionStatus();
+            status.Success = false;
+            SendStatus(status);
             // 断开服务器
             MessageClientState.IsSuccess=false;
         }
         public void OnClientConnected()
         {
+            var status = new ConnectionStatus();
+            status.Success = true;
+            SendStatus(status);
+            // 连接服务器，向客户端发送一个状态
             MessageClientState.IsSuccess = true;
+        }
+
+        private void SendStatus(ConnectionStatus msg)
+        {
+            var repeater = EngineContext.Current.ResolveNamed<IMessageReceiverHandler>(msg.Topic);
+            if (repeater != null)
+            {
+                repeater.Receive(BaseMessage.CreateMessage(msg));
+            }
         }
     }
 }

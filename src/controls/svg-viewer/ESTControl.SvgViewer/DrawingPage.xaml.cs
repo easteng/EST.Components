@@ -173,7 +173,7 @@ namespace ESTControl.SvgViewer
                        if (name.Contains(item.Name))
                        {
                            var methodInfos = item.GetType().GetMethods();
-                           Object[] paras = new Object[] { code, value, state };
+                           Object[] paras = new Object[] { item.Name, value, state };
                            for (int i = 0; i < methodInfos.Length; i++)
                            {
                                var md = methodInfos[i];
